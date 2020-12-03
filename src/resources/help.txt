@@ -1,1 +1,17 @@
+Help
+The purpose of this program it´s to realize the distributed control with traffic lights.
+
+The program has two graphical interfaces. 
+
+The first graphical interface is the "Server", which coordinates and generates traffic lights for users with their respective status information (color) and IP address.
+
+The second graphic interface is related to "Client". The user will be managed through the Server, which will present its graphical representation (red, yellow and green colors). There will be a traffic light timing feature (changing its status) for each user.
+
+User can verify unit of measure type that was selected in the upper field of the screen.
+
+Menu options are described below:
+    • Open “File” tab and selecting “Exit” option: Application will be closed.
+    • Open “Edit” tab and selecting “Copy” option: Application will copy the converted value to transfer area of user.
+    • Open “Help” tab and selecting “Help” option: A new window will open containing essential informations to use the program.
+    • Open “Help” tab and selecting “About” option: A new window will open containing informations about program purpose.
 
