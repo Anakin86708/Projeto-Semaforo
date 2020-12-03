@@ -89,9 +89,19 @@ public class GUIServer extends javax.swing.JFrame {
         helpMenu.setText("Help");
 
         optionHelp.setText("Help");
+        optionHelp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optionHelpActionPerformed(evt);
+            }
+        });
         helpMenu.add(optionHelp);
 
         optionAbout.setText("About");
+        optionAbout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optionAboutActionPerformed(evt);
+            }
+        });
         helpMenu.add(optionAbout);
 
         menuBar.add(helpMenu);
@@ -123,6 +133,18 @@ public class GUIServer extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void optionHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionHelpActionPerformed
+        DialogMessages dialog = new DialogMessages(this, true, "Help");
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_optionHelpActionPerformed
+
+    private void optionAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionAboutActionPerformed
+        DialogMessages dialog = new DialogMessages(this, true, "About");
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_optionAboutActionPerformed
 
     /**
      * @param args the command line arguments
