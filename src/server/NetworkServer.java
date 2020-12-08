@@ -1,14 +1,17 @@
 package server;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,31 +27,44 @@ public class NetworkServer implements Runnable {
 
     private volatile boolean keepRunning;
     private static InetAddress addressServer;
-    private static int port;
+    private static int port = 25556; // Porta fixa do servidor a ser ouvida;
     private List<ClientRepresentation> avaliableClients;
 
-    public NetworkServer() throws UnknownHostException {
+    public NetworkServer() {
         this.keepRunning = true;
-
-        NetworkServer.addressServer = InetAddress.getLocalHost();
-        NetworkServer.port = 25556; // Porta fixa do servidor a ser ouvida
+        this.avaliableClients = new ArrayList<>();
     }
 
     public static InetAddress getAddressServer() {
-        return addressServer;
+        try {
+            return InetAddress.getByName("192.168.15.22");
+        } catch (UnknownHostException ex) {
+            return null;
+        }
     }
 
     public static int getPort() {
         return port;
     }
 
+    public Thread startThread() {
+        Thread thread = new Thread(this);
+        thread.start();
+        return thread;
+    }
+
     /**
      * Deve receber informações de novos clientes que desejam se conectar
      */
     private void listenner() {
+        ServerSocket serverSocket;
+        try {
+            serverSocket = new ServerSocket(port);
+        } catch (IOException ex) {
+            return;
+        }
         while (keepRunning) {
             try {
-                ServerSocket serverSocket = new ServerSocket(port);
                 Socket socket = serverSocket.accept();  // Aguarda até que uma conexão seja estabelecida
 
                 ClientRepresentation client = deserialization(socket);
@@ -99,10 +115,17 @@ public class NetworkServer implements Runnable {
      * @throws IOException
      */
     private void sendCommandChange(ClientRepresentation clientRepresentation, NetworkCommands command) throws IOException {
-        Socket socket = new Socket(clientRepresentation.getAddress(), clientRepresentation.getPort());
-        OutputStream stream = socket.getOutputStream();
-        ObjectOutputStream objectStream = new ObjectOutputStream(stream);
-        objectStream.writeObject(command);
+        DatagramSocket socket = new DatagramSocket(clientRepresentation.getPort(), clientRepresentation.getAddress());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(16);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(command);
+        oos.close();
+        // get the byte array of the object
+        byte[] obj = baos.toByteArray();
+        baos.close();
+
+        DatagramPacket packet = new DatagramPacket(obj, obj.length, clientRepresentation.getAddress(), clientRepresentation.getPort());
+        socket.send(packet);
     }
 
     @Override
