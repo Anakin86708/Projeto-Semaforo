@@ -5,17 +5,26 @@
  */
 package GUI;
 
+import java.util.Timer;
+import server.ServerSemaphore;
+
 /**
  *
  * @author Leo
  */
 public class GUIServer extends javax.swing.JFrame {
 
+    private final ServerSemaphore modificationController;
     /**
      * Creates new form GUIServer
      */
     public GUIServer() {
         initComponents();
+        modificationController = new ServerSemaphore(this);
+        modificationController.initializeLog();
+        Timer timer = new Timer();
+        int period = 2000;
+        timer.scheduleAtFixedRate(modificationController, 0, period);
     }
 
     /**
@@ -29,6 +38,8 @@ public class GUIServer extends javax.swing.JFrame {
 
         clients = new javax.swing.JPanel();
         log = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        logArea = new javax.swing.JTextArea();
         footer = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -55,15 +66,22 @@ public class GUIServer extends javax.swing.JFrame {
 
         log.setBackground(new java.awt.Color(204, 255, 204));
 
+        logArea.setEditable(false);
+        logArea.setColumns(20);
+        logArea.setRows(5);
+        jScrollPane1.setViewportView(logArea);
+
         javax.swing.GroupLayout logLayout = new javax.swing.GroupLayout(log);
         log.setLayout(logLayout);
         logLayout.setHorizontalGroup(
             logLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 507, Short.MAX_VALUE)
+            .addGroup(logLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+                .addContainerGap())
         );
         logLayout.setVerticalGroup(
             logLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
         );
 
         footer.setBackground(new java.awt.Color(0, 204, 204));
@@ -145,48 +163,19 @@ public class GUIServer extends javax.swing.JFrame {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_optionAboutActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUIServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUIServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUIServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUIServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GUIServer().setVisible(true);
-            }
-        });
+    
+    public void writeOnLog(StringBuilder sb) {
+        logArea.append(sb.toString());
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel clients;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JPanel footer;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel log;
+    private javax.swing.JTextArea logArea;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem optionAbout;
     private javax.swing.JMenuItem optionExit;
