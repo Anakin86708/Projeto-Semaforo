@@ -10,9 +10,13 @@ import java.util.TimerTask;
 public class ServerSemaphore extends TimerTask{
     
     private final GUIServer guiServer;
+    private final NetworkServer networkServer;
+    private final Thread serverThread;
     
     public ServerSemaphore(GUIServer guiServer) {
         this.guiServer = guiServer;
+        this.networkServer = new NetworkServer();
+        serverThread = networkServer.startThread();
     }
     
     public void initializeLog() {
@@ -30,6 +34,14 @@ public class ServerSemaphore extends TimerTask{
 
     @Override
     public void run() {
-        generateLog();
+        periodicLog();
+    }
+    
+    private void periodicLog(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Active clients - ").append(networkServer.getAvaliableClients());
+        sb.append("\n\n");
+        guiServer.writeOnLog(sb);
+        System.out.println(sb.toString());
     }
 }

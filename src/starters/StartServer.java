@@ -12,7 +12,7 @@ import GUI.GUIServer;
  * @author silva
  */
 public class StartServer {
-    public static void main(String[] args) {
+    public static void main() {
         GUI.GUIServer server = new GUIServer();
         server.setLocationRelativeTo(null);
         server.setVisible(true);

@@ -37,7 +37,7 @@ public class NetworkServer implements Runnable {
 
     public static InetAddress getAddressServer() {
         try {
-            return InetAddress.getByName("192.168.15.22");
+            return InetAddress.getByName("192.168.0.107");
         } catch (UnknownHostException ex) {
             return null;
         }
@@ -45,6 +45,10 @@ public class NetworkServer implements Runnable {
 
     public static int getPort() {
         return port;
+    }
+    
+    public int getAvaliableClients() {
+        return avaliableClients.size();
     }
 
     public Thread startThread() {
