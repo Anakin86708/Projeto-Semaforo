@@ -166,6 +166,7 @@ public class GUIServer extends javax.swing.JFrame {
     
     public void writeOnLog(StringBuilder sb) {
         logArea.append(sb.toString());
+        logArea.setCaretPosition(logArea.getDocument().getLength());
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
