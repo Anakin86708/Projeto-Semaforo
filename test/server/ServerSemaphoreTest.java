@@ -24,7 +24,7 @@ public class ServerSemaphoreTest {
      */
     @Test
     public void testInitializeLog() {
-        StartServer.main();
+        StartServer.main(null);
         NetworkClient networkClient = new NetworkClient();
     }
 

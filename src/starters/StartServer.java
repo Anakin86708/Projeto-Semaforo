@@ -12,9 +12,15 @@ import GUI.GUIServer;
  * @author silva
  */
 public class StartServer {
-    public static void main() {
-        GUI.GUIServer server = new GUIServer();
-        server.setLocationRelativeTo(null);
-        server.setVisible(true);
+
+    public static void main(String args[]) {
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                GUI.GUIServer server = new GUIServer();
+                server.setLocationRelativeTo(null);
+                server.setVisible(true);
+            }
+        });
     }
 }

@@ -5,17 +5,22 @@
  */
 package GUI;
 
+import client.ClientSemaphore;
+
 /**
  *
  * @author Leo
  */
 public class GUIClient extends javax.swing.JFrame {
+    
+    private final ClientSemaphore semaphoreController;
 
     /**
      * Creates new form GUIClient
      */
     public GUIClient() {
         initComponents();
+        this.semaphoreController = new ClientSemaphore(this);
     }
 
     /**
