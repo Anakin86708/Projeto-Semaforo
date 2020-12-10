@@ -37,7 +37,7 @@ public class NetworkServer implements Runnable {
 
     public static InetAddress getAddressServer() {
         try {
-            return InetAddress.getByName("192.168.0.107");
+            return InetAddress.getByName("192.168.15.22");
         } catch (UnknownHostException ex) {
             return null;
         }
@@ -46,7 +46,7 @@ public class NetworkServer implements Runnable {
     public static int getPort() {
         return port;
     }
-    
+
     public int getAvaliableClients() {
         return avaliableClients.size();
     }
@@ -71,8 +71,29 @@ public class NetworkServer implements Runnable {
             try {
                 Socket socket = serverSocket.accept();  // Aguarda até que uma conexão seja estabelecida
 
-                ClientRepresentation client = deserialization(socket);
-                avaliableClients.add(client);
+                Object result = deserialization(socket);
+                try {
+                    ClientRepresentation client = (ClientRepresentation) result;
+                    avaliableClients.add(client);
+                    return;
+                } catch (Exception e) {
+                }
+                try {
+                    NetworkCommands command = (NetworkCommands) result;
+                    switch (command) {
+                        case STOP:
+                        // Remover o cliente da lista
+                        InetAddress clientRequested = socket.getInetAddress();
+                        this.avaliableClients.forEach((x) -> {
+                            if (x.getAddress().equals(clientRequested)) {
+                                this.avaliableClients.remove(x);
+                            }
+                        });
+
+                    }
+                } catch (Exception e) {
+                }
+
             } catch (IOException ex) {
                 Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -90,11 +111,22 @@ public class NetworkServer implements Runnable {
      * @throws IOException
      * @see ClientRepresentation
      */
-    private ClientRepresentation deserialization(Socket socket) throws ClassNotFoundException, IOException {
-        InputStream inputStream = socket.getInputStream();
-        ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-        ClientRepresentation client = (ClientRepresentation) objectInputStream.readObject();
-        return client;
+    private Object deserialization(Socket socket) throws ClassNotFoundException {
+        ObjectInputStream objectInputStream = null;
+        try {
+            InputStream inputStream = socket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
+            return objectInputStream.readObject();
+        } catch (IOException ex) {
+            Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                objectInputStream.close();
+            } catch (IOException ex) {
+                Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
     }
 
     /**
@@ -102,34 +134,9 @@ public class NetworkServer implements Runnable {
      */
     public void changeSemaphoreStatus() {
         for (ClientRepresentation clientRepresentation : avaliableClients) {
-            try {
-                // Envia o comando de alteração para todos os clientes listados
-                sendCommandChange(clientRepresentation, NetworkCommands.NEXTSTAGE);
-            } catch (IOException ex) {
-                Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            // Envia o comando de alteração para todos os clientes listados
+            NetworkCommands.NEXTSTAGE.sendCommandChangeTo();
         }
-    }
-
-    /**
-     * Responsável por enviar um comando para determinado cliente
-     *
-     * @param clientRepresentation
-     * @param command
-     * @throws IOException
-     */
-    private void sendCommandChange(ClientRepresentation clientRepresentation, NetworkCommands command) throws IOException {
-        DatagramSocket socket = new DatagramSocket(clientRepresentation.getPort(), clientRepresentation.getAddress());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(16);
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(command);
-        oos.close();
-        // get the byte array of the object
-        byte[] obj = baos.toByteArray();
-        baos.close();
-
-        DatagramPacket packet = new DatagramPacket(obj, obj.length, clientRepresentation.getAddress(), clientRepresentation.getPort());
-        socket.send(packet);
     }
 
     @Override

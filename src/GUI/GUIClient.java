@@ -49,6 +49,11 @@ public class GUIClient extends javax.swing.JFrame {
         jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         containerPanel.setBackground(new java.awt.Color(153, 0, 204));
 
@@ -185,6 +190,10 @@ public class GUIClient extends javax.swing.JFrame {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_optionAboutActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        this.semaphoreController.getNetworkClient().sendEndCommand();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

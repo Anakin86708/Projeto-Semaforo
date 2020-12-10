@@ -12,7 +12,7 @@ import GUI.GUIClient;
  * @author silva
  */
 public class ClientSemaphore {
-    
+
     private final GUIClient guiServer;
     private final NetworkClient networkClient;
     private final Thread clientThread;
@@ -26,7 +26,9 @@ public class ClientSemaphore {
         this.networkClient = new NetworkClient();
         this.clientThread = this.networkClient.startThread();
     }
-    
-    
-    
+
+    public NetworkClient getNetworkClient() {
+        return networkClient;
+    }
+
 }

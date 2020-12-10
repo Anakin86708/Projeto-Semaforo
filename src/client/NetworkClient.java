@@ -25,9 +25,11 @@ import server.NetworkServer;
  */
 public class NetworkClient implements Runnable {
 
-    ClientRepresentation representation;
+    private ClientRepresentation representation;
+    private volatile boolean keepRunning;
 
     public NetworkClient() {
+        this.keepRunning = true;
         try {
             this.representation = new ClientRepresentation(InetAddress.getLocalHost(), generatePort());
             beaconToServer();
@@ -52,8 +54,12 @@ public class NetworkClient implements Runnable {
         OutputStream stream = socket.getOutputStream();
         ObjectOutputStream objectStream = new ObjectOutputStream(stream);
         objectStream.writeObject(representation);
+        socket.close();
     }
 
+    /**
+     * Responsável por acompanhar e receber comandos pela rede
+     */
     private void listenner() {
         DatagramSocket socket;
         try {
@@ -61,7 +67,7 @@ public class NetworkClient implements Runnable {
         } catch (SocketException ex) {
             return;
         }
-        while (true) {
+        while (this.keepRunning) {
             try {
                 byte[] buf = new byte[16];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -76,6 +82,7 @@ public class NetworkClient implements Runnable {
                 Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        System.out.println("Ending client listenner thread");
     }
 
     /**
@@ -94,14 +101,6 @@ public class NetworkClient implements Runnable {
         return -1;
     }
 
-    private boolean isPortAvailable(int port) {
-        try ( var ss = new ServerSocket(port);  var ds = new DatagramSocket(port)) {
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
     private NetworkCommands deserialization(DatagramPacket packet) throws IOException {
         try {
             ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
@@ -116,5 +115,10 @@ public class NetworkClient implements Runnable {
     public void run() {
         listenner();
     }
-
+    
+    public void sendEndCommand() {
+        this.keepRunning = false;
+        NetworkCommands.STOP.sendCommandChangeTo();
+    }
+    
 }
