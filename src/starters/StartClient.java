@@ -10,7 +10,9 @@ public class StartClient {
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GUIClient().setVisible(true);
+                GUIClient guic = new GUIClient();
+                guic.setLocationRelativeTo(null);
+                guic.setVisible(true);
             }
         });
     }

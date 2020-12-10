@@ -84,7 +84,22 @@ public class NetworkClient implements Runnable {
      * @return
      */
     private int generatePort() {
-        return new Socket().getPort();
+        try ( ServerSocket ss = new ServerSocket(0)) {
+            if (ss != null && ss.getLocalPort() > 0) {
+                return ss.getLocalPort();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(NetworkClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
+
+    private boolean isPortAvailable(int port) {
+        try ( var ss = new ServerSocket(port);  var ds = new DatagramSocket(port)) {
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     private NetworkCommands deserialization(DatagramPacket packet) throws IOException {
