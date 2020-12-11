@@ -15,6 +15,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import network.ClientRepresentation;
 import network.NetworkCommands;
 import server.NetworkServer;
@@ -25,15 +26,16 @@ import server.NetworkServer;
  */
 public class NetworkClient implements Runnable {
 
-    private ClientRepresentation representation;
+    private ClientRepresentation clientRepresentation;
     private volatile boolean keepRunning;
 
     public NetworkClient() {
         this.keepRunning = true;
         try {
-            this.representation = new ClientRepresentation(InetAddress.getLocalHost(), generatePort());
+            this.clientRepresentation = new ClientRepresentation(InetAddress.getLocalHost(), generatePort());
             beaconToServer();
         } catch (UnknownHostException ex) {
+            JOptionPane.showMessageDialog(null, "Unable to bind to network interface. Aborting...\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(NetworkClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(NetworkClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -50,11 +52,7 @@ public class NetworkClient implements Runnable {
      * Avisa ao servidor que um novo cliente está disponível
      */
     private void beaconToServer() throws IOException {
-        Socket socket = new Socket(NetworkServer.getAddressServer(), NetworkServer.getPort());
-        OutputStream stream = socket.getOutputStream();
-        ObjectOutputStream objectStream = new ObjectOutputStream(stream);
-        objectStream.writeObject(representation);
-        socket.close();
+        NetworkCommands.NEW.sendCommandChangeTo(this.clientRepresentation);
     }
 
     /**
@@ -63,7 +61,7 @@ public class NetworkClient implements Runnable {
     private void listenner() {
         DatagramSocket socket;
         try {
-            socket = new DatagramSocket(representation.getPort());
+            socket = new DatagramSocket(clientRepresentation.getPort());
         } catch (SocketException ex) {
             return;
         }
@@ -80,6 +78,7 @@ public class NetworkClient implements Runnable {
                 }
             } catch (IOException ex) {
                 Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Error while listenning on client.\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         System.out.println("Ending client listenner thread");
@@ -96,7 +95,9 @@ public class NetworkClient implements Runnable {
                 return ss.getLocalPort();
             }
         } catch (IOException ex) {
-            Logger.getLogger(NetworkClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Error while getting port for client.\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
         return -1;
     }
@@ -118,7 +119,7 @@ public class NetworkClient implements Runnable {
     
     public void sendEndCommand() {
         this.keepRunning = false;
-        NetworkCommands.STOP.sendCommandChangeTo();
+        NetworkCommands.STOP.sendCommandChangeTo(clientRepresentation);
     }
     
 }

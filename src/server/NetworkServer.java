@@ -1,5 +1,6 @@
 package server;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,11 +11,13 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import network.ClientRepresentation;
 import network.NetworkCommands;
 
@@ -26,7 +29,6 @@ import network.NetworkCommands;
 public class NetworkServer implements Runnable {
 
     private volatile boolean keepRunning;
-    private static InetAddress addressServer;
     private static int port = 25556; // Porta fixa do servidor a ser ouvida;
     private List<ClientRepresentation> avaliableClients;
 
@@ -61,44 +63,39 @@ public class NetworkServer implements Runnable {
      * Deve receber informações de novos clientes que desejam se conectar
      */
     private void listenner() {
-        ServerSocket serverSocket;
         try {
-            serverSocket = new ServerSocket(port);
-        } catch (IOException ex) {
-            return;
-        }
-        while (keepRunning) {
-            try {
-                Socket socket = serverSocket.accept();  // Aguarda até que uma conexão seja estabelecida
+            byte[] buf = new byte[NetworkCommands.BYTEARRAYSIZE];
+            DatagramSocket socket = new DatagramSocket(port);
 
-                Object result = deserialization(socket);
+            while (keepRunning) {
                 try {
-                    ClientRepresentation client = (ClientRepresentation) result;
-                    avaliableClients.add(client);
-                    return;
-                } catch (Exception e) {
-                }
-                try {
-                    NetworkCommands command = (NetworkCommands) result;
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    NetworkCommands command = deserialization(packet.getData());
+
                     switch (command) {
-                        case STOP:
-                        // Remover o cliente da lista
-                        InetAddress clientRequested = socket.getInetAddress();
-                        this.avaliableClients.forEach((x) -> {
-                            if (x.getAddress().equals(clientRequested)) {
-                                this.avaliableClients.remove(x);
-                            }
-                        });
-
+                        case NEW -> {
+                            avaliableClients.add(command.getSrcRepresentation());  // Cliente está null
+                        }
+                        case STOP -> {
+                            // Remover o cliente da lista
+                            ClientRepresentation clientRequested = command.getSrcRepresentation();
+                            this.avaliableClients.forEach((x) -> {
+                                if (x.getAddress().equals(clientRequested.getAddress())) {
+                                    this.avaliableClients.remove(x);
+                                }
+                            });
+                        }
                     }
-                } catch (Exception e) {
-                }
 
-            } catch (IOException ex) {
-                Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Error while listenning on server.\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
+        } catch (SocketException ex) {
+            Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Server socket error.\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -111,18 +108,21 @@ public class NetworkServer implements Runnable {
      * @throws IOException
      * @see ClientRepresentation
      */
-    private Object deserialization(Socket socket) throws ClassNotFoundException {
-        ObjectInputStream objectInputStream = null;
+    private NetworkCommands deserialization(byte[] data) {
+        ObjectInputStream objectStream = null;
+
         try {
-            InputStream inputStream = socket.getInputStream();
-            objectInputStream = new ObjectInputStream(inputStream);
-            return objectInputStream.readObject();
-        } catch (IOException ex) {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+            objectStream = new ObjectInputStream(inputStream);
+            return (NetworkCommands) objectStream.readObject();
+        } catch (IOException | ClassNotFoundException ex) {
+            System.err.println("Error desserialization on server");
             Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                objectInputStream.close();
-            } catch (IOException ex) {
+                objectStream.close();
+            } catch (IOException | NullPointerException ex) {
+                System.err.println("Null pointer on server");
                 Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -135,7 +135,7 @@ public class NetworkServer implements Runnable {
     public void changeSemaphoreStatus() {
         for (ClientRepresentation clientRepresentation : avaliableClients) {
             // Envia o comando de alteração para todos os clientes listados
-            NetworkCommands.NEXTSTAGE.sendCommandChangeTo();
+            NetworkCommands.NEXTSTAGE.sendCommandChangeTo(new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()), clientRepresentation);
         }
     }
 

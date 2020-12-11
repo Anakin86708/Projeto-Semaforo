@@ -14,6 +14,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import server.NetworkServer;
 
 /**
@@ -22,39 +23,47 @@ import server.NetworkServer;
  * @author silva
  */
 public enum NetworkCommands implements Serializable {
-    NEXTSTAGE, STOP;
+    NEW, NEXTSTAGE, STOP;
+    
+    public static final int BYTEARRAYSIZE = 1024;
+    private ClientRepresentation srcRepresentation;
+
+    public ClientRepresentation getSrcRepresentation() {
+        return srcRepresentation;
+    }
 
     /**
      * Responsável por enviar um comando para determinado cliente
      *
-     * @param clientRepresentation
-     * @param command
-     * @throws IOException
+     * @param srcRepresentation
+     * @param dstRepresentation
      */
-    public void sendCommandChangeTo(ClientRepresentation clientRepresentation)  {
+    public void sendCommandChangeTo(ClientRepresentation srcRepresentation, ClientRepresentation dstRepresentation) {
         try {
-            DatagramSocket socket = new DatagramSocket(clientRepresentation.getPort(), clientRepresentation.getAddress());
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(16);
+            this.srcRepresentation = srcRepresentation;
+            DatagramSocket socket = new DatagramSocket();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(BYTEARRAYSIZE);
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(this);
             oos.close();
+            
             // get the byte array of the object
             byte[] obj = baos.toByteArray();
             baos.close();
-            DatagramPacket packet = new DatagramPacket(obj, obj.length, clientRepresentation.getAddress(), clientRepresentation.getPort());
+            DatagramPacket packet = new DatagramPacket(obj, obj.length, dstRepresentation.getAddress(), dstRepresentation.getPort());
             socket.send(packet);
-        } catch (SocketException ex) {
-            Logger.getLogger(NetworkCommands.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(NetworkCommands.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Error while sending object.\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     /**
      * Envia mensagens para o servidor
+     * @param srcRepresentation
      */
-    public void sendCommandChangeTo() {
-        sendCommandChangeTo(new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()));
+    public void sendCommandChangeTo(ClientRepresentation srcRepresentation) {
+        sendCommandChangeTo(srcRepresentation, new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()));
     }
-    
+
 }
