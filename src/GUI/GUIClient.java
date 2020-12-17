@@ -6,6 +6,7 @@
 package GUI;
 
 import client.ClientSemaphore;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -61,7 +62,7 @@ public class GUIClient extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("42");
+        jLabel1.setText("-1");
 
         javax.swing.GroupLayout trafficLightCounterLayout = new javax.swing.GroupLayout(trafficLightCounter);
         trafficLightCounter.setLayout(trafficLightCounterLayout);
@@ -191,10 +192,17 @@ public class GUIClient extends javax.swing.JFrame {
         dialog.setVisible(true);
     }//GEN-LAST:event_optionAboutActionPerformed
 
+    public void writeText(String text) {
+        this.jLabel1.setText(text);
+    }
+    
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         this.semaphoreController.getNetworkClient().sendEndCommand();
     }//GEN-LAST:event_formWindowClosing
 
+    public static void close() {
+        System.exit(0);
+    }
     /**
      * @param args the command line arguments
      */

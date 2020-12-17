@@ -15,13 +15,14 @@ import server.ServerSemaphore;
 public class GUIServer extends javax.swing.JFrame {
 
     private final ServerSemaphore semaphoreController;
+
     /**
      * Creates new form GUIServer
      */
     public GUIServer() {
         initComponents();
         this.semaphoreController = new ServerSemaphore(this);
-        int period = 2000;
+        int period = 5000;
         initializeLog(period);
     }
 
@@ -183,19 +184,24 @@ public class GUIServer extends javax.swing.JFrame {
     }//GEN-LAST:event_exit
 
     private void windowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_windowClosing
+        closeAllClients();
         stopThreadsAndExit();
     }//GEN-LAST:event_windowClosing
-    
+
+    private void closeAllClients() {
+        this.semaphoreController.closeAllClients();
+    }
+
     private void stopThreadsAndExit() {
         this.semaphoreController.stopThread();
         System.exit(0);
     }
-    
+
     public void writeOnLog(StringBuilder sb) {
         logArea.append(sb.toString());
         logArea.setCaretPosition(logArea.getDocument().getLength());
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel clients;
     private javax.swing.JMenu fileMenu;

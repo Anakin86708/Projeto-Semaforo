@@ -24,7 +24,7 @@ import server.NetworkServer;
  * @author silva
  */
 public enum NetworkCommands implements Serializable{
-    NEW, NEXTSTAGE, STOP;
+    NEW, NEXTSTAGE, STOP, SERVER_STOP;
 
     public static final int BYTEARRAYSIZE = 2048;
     NetworkObject networkObject;

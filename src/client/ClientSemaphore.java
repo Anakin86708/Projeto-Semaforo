@@ -6,6 +6,7 @@
 package client;
 
 import GUI.GUIClient;
+import resources.StageSemaphore;
 
 /**
  *
@@ -13,22 +14,30 @@ import GUI.GUIClient;
  */
 public class ClientSemaphore {
 
-    private final GUIClient guiServer;
+    private final GUIClient guiClient;
     private final NetworkClient networkClient;
     private final Thread clientThread;
+    private StageSemaphore stage;
 
     /**
      *
      * @param guiServer
      */
     public ClientSemaphore(GUIClient guiServer) {
-        this.guiServer = guiServer;
-        this.networkClient = new NetworkClient();
+        this.guiClient = guiServer;
+        this.networkClient = new NetworkClient(this);
         this.clientThread = this.networkClient.startThread();
+        this.stage = StageSemaphore.RED;
+        guiClient.writeText(this.stage.toString());
     }
 
     public NetworkClient getNetworkClient() {
         return networkClient;
+    }
+
+    public void changeStage() {
+        this.stage = this.stage.changeStage();
+        guiClient.writeText(this.stage.toString());
     }
 
 }
