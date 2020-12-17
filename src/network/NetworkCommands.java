@@ -15,6 +15,7 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import static resources.ExceptionHandler.errorDialog;
 import server.NetworkServer;
 
 /**
@@ -24,7 +25,7 @@ import server.NetworkServer;
  */
 public enum NetworkCommands implements Serializable {
     NEW, NEXTSTAGE, STOP;
-    
+
     public static final int BYTEARRAYSIZE = 1024;
     private ClientRepresentation srcRepresentation;
 
@@ -42,27 +43,30 @@ public enum NetworkCommands implements Serializable {
         try {
             this.srcRepresentation = srcRepresentation;
             DatagramSocket socket = new DatagramSocket();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(BYTEARRAYSIZE);
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(this);
-            oos.close();
-            
-            // get the byte array of the object
-            byte[] obj = baos.toByteArray();
-            baos.close();
+            ByteArrayOutputStream outputStream = serialize(socket);
+            byte[] obj = outputStream.toByteArray();
+            outputStream.close();
             DatagramPacket packet = new DatagramPacket(obj, obj.length, dstRepresentation.getAddress(), dstRepresentation.getPort());
             socket.send(packet);
         } catch (IOException ex) {
-            Logger.getLogger(NetworkCommands.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, "Error while sending object.\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            errorDialog(ex, "Error while sending object.\n");
         }
+    }
+
+    private ByteArrayOutputStream serialize(DatagramSocket socket) throws SocketException, IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(BYTEARRAYSIZE);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+        objectOutputStream.writeObject(this);
+        objectOutputStream.close();
+        return outputStream;
     }
 
     /**
      * Envia mensagens para o servidor
+     *
      * @param srcRepresentation
      */
-    public void sendCommandChangeTo(ClientRepresentation srcRepresentation) {
+    public void sendCommandChangeToServer(ClientRepresentation srcRepresentation) {
         sendCommandChangeTo(srcRepresentation, new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()));
     }
 

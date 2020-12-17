@@ -26,12 +26,6 @@ public class ServerSemaphore extends TimerTask{
         guiServer.writeOnLog(teste);
     }
     
-    public void generateLog() {
-        StringBuilder testeGenerate = new StringBuilder();
-        testeGenerate.append("Teste A\n");
-        guiServer.writeOnLog(testeGenerate);
-    }
-
     @Override
     public void run() {
         periodicLog();
@@ -43,5 +37,10 @@ public class ServerSemaphore extends TimerTask{
         sb.append("\n\n");
         guiServer.writeOnLog(sb);
         System.out.println(sb.toString());
+    }
+    
+    public void stopThread() {
+        this.networkServer.stop();
+        serverThread.interrupt();
     }
 }

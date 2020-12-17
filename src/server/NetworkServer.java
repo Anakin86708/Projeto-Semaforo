@@ -1,5 +1,6 @@
 package server;
 
+import java.awt.HeadlessException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import network.ClientRepresentation;
 import network.NetworkCommands;
+import static resources.ExceptionHandler.errorDialog;
 
 /**
  * Responsável por gerenciar a comunicação de rede do servidor
@@ -29,8 +31,9 @@ import network.NetworkCommands;
 public class NetworkServer implements Runnable {
 
     private volatile boolean keepRunning;
-    private static int port = 25556; // Porta fixa do servidor a ser ouvida;
-    private List<ClientRepresentation> avaliableClients;
+    private static final int PORT = 25556; // Porta fixa do servidor a ser ouvida;
+    private final List<ClientRepresentation> avaliableClients;
+    private DatagramSocket listennerDatagramSocket;
 
     public NetworkServer() {
         this.keepRunning = true;
@@ -38,15 +41,16 @@ public class NetworkServer implements Runnable {
     }
 
     public static InetAddress getAddressServer() {
+        String serverIP = "192.168.15.22";
         try {
-            return InetAddress.getByName("192.168.15.22");
+            return InetAddress.getByName(serverIP);
         } catch (UnknownHostException ex) {
             return null;
         }
     }
 
     public static int getPort() {
-        return port;
+        return PORT;
     }
 
     public int getAvaliableClients() {
@@ -59,45 +63,40 @@ public class NetworkServer implements Runnable {
         return thread;
     }
 
+    @Override
+    public void run() {
+        listener();
+    }
+
     /**
      * Deve receber informações de novos clientes que desejam se conectar
      */
-    private void listenner() {
+    private void listener() {
         try {
             byte[] buf = new byte[NetworkCommands.BYTEARRAYSIZE];
-            DatagramSocket socket = new DatagramSocket(port);
+            listennerDatagramSocket = new DatagramSocket(PORT);
 
             while (keepRunning) {
-                try {
-                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                    socket.receive(packet);
-                    NetworkCommands command = deserialization(packet.getData());
-
-                    switch (command) {
-                        case NEW -> {
-                            avaliableClients.add(command.getSrcRepresentation());  // Cliente está null
-                        }
-                        case STOP -> {
-                            // Remover o cliente da lista
-                            ClientRepresentation clientRequested = command.getSrcRepresentation();
-                            this.avaliableClients.forEach((x) -> {
-                                if (x.getAddress().equals(clientRequested.getAddress())) {
-                                    this.avaliableClients.remove(x);
-                                }
-                            });
-                        }
-                    }
-
-                } catch (IOException ex) {
-                    Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Error while listenning on server.\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                recivePacket(buf);
             }
         } catch (SocketException ex) {
-            Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, "Server socket error.\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            errorDialog(ex, "Server socket error.\n");
         }
     }
+
+    private void recivePacket(byte[] buf) throws HeadlessException {
+        try {
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            listennerDatagramSocket.receive(packet);
+            NetworkCommands command = deserialization(packet.getData());
+            interpretCommand(command);
+        } catch (IOException ex) {
+            errorDialog(ex, "Error while listenning on server.\n");
+        } catch (ClassNotFoundException ex) {
+            errorDialog(ex, "Class not found!\n");
+        }
+    }
+
 
     /**
      * Realiza a deserialização de um objeto recebido pela rede
@@ -108,39 +107,48 @@ public class NetworkServer implements Runnable {
      * @throws IOException
      * @see ClientRepresentation
      */
-    private NetworkCommands deserialization(byte[] data) {
-        ObjectInputStream objectStream = null;
+    private NetworkCommands deserialization(byte[] data) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        ObjectInputStream objectStream = new ObjectInputStream(inputStream);
+        return (NetworkCommands) objectStream.readObject();
+    }
 
-        try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-            objectStream = new ObjectInputStream(inputStream);
-            return (NetworkCommands) objectStream.readObject();
-        } catch (IOException | ClassNotFoundException ex) {
-            System.err.println("Error desserialization on server");
-            Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                objectStream.close();
-            } catch (IOException | NullPointerException ex) {
-                System.err.println("Null pointer on server");
-                Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
+    private void interpretCommand(NetworkCommands command) {
+        switch (command) {
+            case NEW -> {
+                addNewClient(command);
+            }
+            case STOP -> {
+                removeClient(command);
             }
         }
-        return null;
+    }
+
+    private void addNewClient(NetworkCommands command) {
+        avaliableClients.add(command.getSrcRepresentation());  // Cliente está null
+    }
+
+    private void removeClient(NetworkCommands command) {
+        // Remover o cliente da lista
+        ClientRepresentation clientRequested = command.getSrcRepresentation();
+        this.avaliableClients.forEach((client) -> {
+            if (client.getAddress().equals(clientRequested.getAddress())) {
+                this.avaliableClients.remove(client);
+            }
+        });
     }
 
     /**
      * Deve enviar uma solicitação a todos os clientes para alterar o status
      */
     public void changeSemaphoreStatus() {
-        for (ClientRepresentation clientRepresentation : avaliableClients) {
-            // Envia o comando de alteração para todos os clientes listados
+        avaliableClients.forEach(clientRepresentation -> {
             NetworkCommands.NEXTSTAGE.sendCommandChangeTo(new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()), clientRepresentation);
-        }
+        });
     }
 
-    @Override
-    public void run() {
-        listenner();
+    public void stop() {
+        this.keepRunning = false;
+        this.listennerDatagramSocket.close();
     }
 }

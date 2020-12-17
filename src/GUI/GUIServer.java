@@ -14,17 +14,21 @@ import server.ServerSemaphore;
  */
 public class GUIServer extends javax.swing.JFrame {
 
-    private final ServerSemaphore modificationController;
+    private final ServerSemaphore semaphoreController;
     /**
      * Creates new form GUIServer
      */
     public GUIServer() {
         initComponents();
-        modificationController = new ServerSemaphore(this);
-        modificationController.initializeLog();
-        Timer timer = new Timer();
+        this.semaphoreController = new ServerSemaphore(this);
         int period = 2000;
-        timer.scheduleAtFixedRate(modificationController, 0, period);
+        initializeLog(period);
+    }
+
+    private void initializeLog(int period) {
+        Timer timer = new Timer();
+        semaphoreController.initializeLog();
+        timer.scheduleAtFixedRate(semaphoreController, 0, period);
     }
 
     /**
@@ -49,6 +53,11 @@ public class GUIServer extends javax.swing.JFrame {
         optionAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                GUIServer.this.windowClosing(evt);
+            }
+        });
 
         clients.setBackground(new java.awt.Color(255, 204, 204));
         clients.setMinimumSize(new java.awt.Dimension(130, 100));
@@ -100,6 +109,11 @@ public class GUIServer extends javax.swing.JFrame {
         fileMenu.setText("File");
 
         optionExit.setText("Exit");
+        optionExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exit(evt);
+            }
+        });
         fileMenu.add(optionExit);
 
         menuBar.add(fileMenu);
@@ -109,7 +123,7 @@ public class GUIServer extends javax.swing.JFrame {
         optionHelp.setText("Help");
         optionHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optionHelpActionPerformed(evt);
+                showHelp(evt);
             }
         });
         helpMenu.add(optionHelp);
@@ -117,7 +131,7 @@ public class GUIServer extends javax.swing.JFrame {
         optionAbout.setText("About");
         optionAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optionAboutActionPerformed(evt);
+                showAbout(evt);
             }
         });
         helpMenu.add(optionAbout);
@@ -152,17 +166,30 @@ public class GUIServer extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void optionHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionHelpActionPerformed
+    private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
         DialogMessages dialog = new DialogMessages(this, true, "Help");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-    }//GEN-LAST:event_optionHelpActionPerformed
+    }//GEN-LAST:event_showHelp
 
-    private void optionAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionAboutActionPerformed
+    private void showAbout(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAbout
         DialogMessages dialog = new DialogMessages(this, true, "About");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-    }//GEN-LAST:event_optionAboutActionPerformed
+    }//GEN-LAST:event_showAbout
+
+    private void exit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exit
+        stopThreadsAndExit();
+    }//GEN-LAST:event_exit
+
+    private void windowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_windowClosing
+        stopThreadsAndExit();
+    }//GEN-LAST:event_windowClosing
+    
+    private void stopThreadsAndExit() {
+        this.semaphoreController.stopThread();
+        System.exit(0);
+    }
     
     public void writeOnLog(StringBuilder sb) {
         logArea.append(sb.toString());

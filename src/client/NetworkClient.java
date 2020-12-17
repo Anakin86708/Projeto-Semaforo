@@ -52,7 +52,7 @@ public class NetworkClient implements Runnable {
      * Avisa ao servidor que um novo cliente está disponível
      */
     private void beaconToServer() throws IOException {
-        NetworkCommands.NEW.sendCommandChangeTo(this.clientRepresentation);
+        NetworkCommands.NEW.sendCommandChangeToServer(this.clientRepresentation);
     }
 
     /**
@@ -119,7 +119,7 @@ public class NetworkClient implements Runnable {
     
     public void sendEndCommand() {
         this.keepRunning = false;
-        NetworkCommands.STOP.sendCommandChangeTo(clientRepresentation);
+        NetworkCommands.STOP.sendCommandChangeToServer(clientRepresentation);
     }
     
 }
