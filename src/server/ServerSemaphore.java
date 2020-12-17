@@ -30,6 +30,7 @@ public class ServerSemaphore extends TimerTask{
     
     @Override
     public void run() {
+        networkServer.changeSemaphoreStatus();
         periodicLog();
     }
     

@@ -21,7 +21,7 @@ public class GUIServer extends javax.swing.JFrame {
     public GUIServer() {
         initComponents();
         this.semaphoreController = new ServerSemaphore(this);
-        int period = 2000;
+        int period = 5000;
         initializeLog(period);
     }
 
