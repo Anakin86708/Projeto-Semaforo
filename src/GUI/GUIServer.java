@@ -5,17 +5,30 @@
  */
 package GUI;
 
+import java.util.Timer;
+import server.ServerSemaphore;
+
 /**
  *
  * @author Leo
  */
 public class GUIServer extends javax.swing.JFrame {
 
+    private final ServerSemaphore semaphoreController;
     /**
      * Creates new form GUIServer
      */
     public GUIServer() {
         initComponents();
+        this.semaphoreController = new ServerSemaphore(this);
+        int period = 2000;
+        initializeLog(period);
+    }
+
+    private void initializeLog(int period) {
+        Timer timer = new Timer();
+        semaphoreController.initializeLog();
+        timer.scheduleAtFixedRate(semaphoreController, 0, period);
     }
 
     /**
@@ -29,6 +42,8 @@ public class GUIServer extends javax.swing.JFrame {
 
         clients = new javax.swing.JPanel();
         log = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        logArea = new javax.swing.JTextArea();
         footer = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -38,6 +53,11 @@ public class GUIServer extends javax.swing.JFrame {
         optionAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                GUIServer.this.windowClosing(evt);
+            }
+        });
 
         clients.setBackground(new java.awt.Color(255, 204, 204));
         clients.setMinimumSize(new java.awt.Dimension(130, 100));
@@ -55,15 +75,22 @@ public class GUIServer extends javax.swing.JFrame {
 
         log.setBackground(new java.awt.Color(204, 255, 204));
 
+        logArea.setEditable(false);
+        logArea.setColumns(20);
+        logArea.setRows(5);
+        jScrollPane1.setViewportView(logArea);
+
         javax.swing.GroupLayout logLayout = new javax.swing.GroupLayout(log);
         log.setLayout(logLayout);
         logLayout.setHorizontalGroup(
             logLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 507, Short.MAX_VALUE)
+            .addGroup(logLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+                .addContainerGap())
         );
         logLayout.setVerticalGroup(
             logLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
         );
 
         footer.setBackground(new java.awt.Color(0, 204, 204));
@@ -82,6 +109,11 @@ public class GUIServer extends javax.swing.JFrame {
         fileMenu.setText("File");
 
         optionExit.setText("Exit");
+        optionExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exit(evt);
+            }
+        });
         fileMenu.add(optionExit);
 
         menuBar.add(fileMenu);
@@ -91,7 +123,7 @@ public class GUIServer extends javax.swing.JFrame {
         optionHelp.setText("Help");
         optionHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optionHelpActionPerformed(evt);
+                showHelp(evt);
             }
         });
         helpMenu.add(optionHelp);
@@ -99,7 +131,7 @@ public class GUIServer extends javax.swing.JFrame {
         optionAbout.setText("About");
         optionAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optionAboutActionPerformed(evt);
+                showAbout(evt);
             }
         });
         helpMenu.add(optionAbout);
@@ -134,59 +166,44 @@ public class GUIServer extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void optionHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionHelpActionPerformed
+    private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
         DialogMessages dialog = new DialogMessages(this, true, "Help");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-    }//GEN-LAST:event_optionHelpActionPerformed
+    }//GEN-LAST:event_showHelp
 
-    private void optionAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionAboutActionPerformed
+    private void showAbout(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAbout
         DialogMessages dialog = new DialogMessages(this, true, "About");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-    }//GEN-LAST:event_optionAboutActionPerformed
+    }//GEN-LAST:event_showAbout
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUIServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUIServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUIServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUIServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void exit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exit
+        stopThreadsAndExit();
+    }//GEN-LAST:event_exit
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GUIServer().setVisible(true);
-            }
-        });
+    private void windowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_windowClosing
+        stopThreadsAndExit();
+    }//GEN-LAST:event_windowClosing
+    
+    private void stopThreadsAndExit() {
+        this.semaphoreController.stopThread();
+        System.exit(0);
     }
-
+    
+    public void writeOnLog(StringBuilder sb) {
+        logArea.append(sb.toString());
+        logArea.setCaretPosition(logArea.getDocument().getLength());
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel clients;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JPanel footer;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel log;
+    private javax.swing.JTextArea logArea;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem optionAbout;
     private javax.swing.JMenuItem optionExit;
