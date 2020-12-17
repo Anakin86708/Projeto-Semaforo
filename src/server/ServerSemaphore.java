@@ -4,6 +4,7 @@ import GUI.GUIServer;
 import java.util.List;
 import java.util.TimerTask;
 import network.ClientRepresentation;
+import network.NetworkCommands;
 
 /**
  *
@@ -50,6 +51,13 @@ public class ServerSemaphore extends TimerTask{
             sb.append("Client ip: ").append(client.getAddress()).append(":").append(client.getPort()).append("\n");
         });
         return sb.toString();
+    }
+    
+    public void closeAllClients() {
+        ClientRepresentation srcRepresentation = new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort());
+        this.networkServer.getAvaliableClients().forEach(client -> {
+            NetworkCommands.SERVER_STOP.sendCommandChangeTo(srcRepresentation, client);
+        });
     }
     
     public void stopThread() {

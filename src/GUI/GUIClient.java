@@ -6,6 +6,7 @@
 package GUI;
 
 import client.ClientSemaphore;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -199,6 +200,9 @@ public class GUIClient extends javax.swing.JFrame {
         this.semaphoreController.getNetworkClient().sendEndCommand();
     }//GEN-LAST:event_formWindowClosing
 
+    public static void close() {
+        System.exit(0);
+    }
     /**
      * @param args the command line arguments
      */

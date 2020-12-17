@@ -1,5 +1,6 @@
 package client;
 
+import GUI.GUIClient;
 import java.awt.HeadlessException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -109,6 +110,10 @@ public class NetworkClient implements Runnable {
         switch (command.getCommand()) {
             case NEXTSTAGE -> {
                 this.semaphore.changeStage();
+            }
+            case SERVER_STOP -> {
+                sendEndCommand();
+                GUIClient.close();
             }
         }
     }
