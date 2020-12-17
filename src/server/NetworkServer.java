@@ -51,6 +51,10 @@ public class NetworkServer implements Runnable {
         return avaliableClients.size();
     }
 
+    public List<ClientRepresentation> getAvaliableClients() {
+        return avaliableClients;
+    }
+
     public Thread startThread() {
         Thread thread = new Thread(this);
         thread.start();
@@ -82,8 +86,9 @@ public class NetworkServer implements Runnable {
         try {
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             listennerDatagramSocket.receive(packet);
+            InetAddress srcClient = packet.getAddress();
             NetworkObject command = deserialization(packet.getData());
-            interpretCommand(command);
+            interpretCommand(command, srcClient);
         } catch (IOException ex) {
             errorDialog(ex, "Error while listenning on server.\n");
         } catch (ClassNotFoundException ex) {
@@ -106,13 +111,14 @@ public class NetworkServer implements Runnable {
         return (NetworkObject) objectStream.readObject();
     }
 
-    private void interpretCommand(NetworkObject command) {
+    private void interpretCommand(NetworkObject command, InetAddress srcClient) {
+        ClientRepresentation srcRepresentation = new ClientRepresentation(srcClient, command.getSrcRepresentation().getPort());
         switch (command.getCommand()) {
             case NEW -> {
-                addNewClient(command.getSrcRepresentation());
+                addNewClient(srcRepresentation);
             }
             case STOP -> {
-                removeClient(command.getSrcRepresentation());
+                removeClient(srcRepresentation);
             }
         }
     }
