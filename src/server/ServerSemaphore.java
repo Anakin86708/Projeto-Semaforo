@@ -33,7 +33,7 @@ public class ServerSemaphore extends TimerTask{
     
     private void periodicLog(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Active clients - ").append(networkServer.getAvaliableClients());
+        sb.append("Active clients - ").append(networkServer.getCountAvaliableClients());
         sb.append("\n\n");
         guiServer.writeOnLog(sb);
         System.out.println(sb.toString());

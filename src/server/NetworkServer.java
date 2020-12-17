@@ -2,23 +2,16 @@ package server;
 
 import java.awt.HeadlessException;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import network.ClientRepresentation;
 import network.NetworkCommands;
 import network.NetworkObject;
@@ -54,7 +47,7 @@ public class NetworkServer implements Runnable {
         return PORT;
     }
 
-    public int getAvaliableClients() {
+    public int getCountAvaliableClients() {
         return avaliableClients.size();
     }
 
@@ -98,7 +91,6 @@ public class NetworkServer implements Runnable {
         }
     }
 
-
     /**
      * Realiza a deserialização de um objeto recebido pela rede
      *
@@ -130,19 +122,23 @@ public class NetworkServer implements Runnable {
     }
 
     private void removeClient(ClientRepresentation clientRequested) {
-        // Remover o cliente da lista
-        this.avaliableClients.forEach((client) -> {
-            if (client.getAddress().equals(clientRequested.getAddress())) {
-                this.avaliableClients.remove(client);
+        try {
+            Iterator<ClientRepresentation> clientIterable = this.avaliableClients.iterator();
+            while (clientIterable.hasNext()) {
+                ClientRepresentation next = clientIterable.next();
+                if (next.getAddress().equals(clientRequested.getAddress())) {
+                    this.avaliableClients.remove(next);
+                }
             }
-        });
+        } catch (Exception e) {
+        }
     }
 
     /**
      * Deve enviar uma solicitação a todos os clientes para alterar o status
      */
     public void changeSemaphoreStatus() {
-        avaliableClients.forEach(clientRepresentation -> {
+        this.avaliableClients.forEach(clientRepresentation -> {
             NetworkCommands.NEXTSTAGE.sendCommandChangeTo(new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()), clientRepresentation);
         });
     }
