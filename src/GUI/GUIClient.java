@@ -8,7 +8,7 @@ package GUI;
 import client.ClientSemaphore;
 
 /**
- *
+ * Responsable to create the Client's Interface Graphic
  * @author Leo
  */
 public class GUIClient extends javax.swing.JFrame {
@@ -173,13 +173,19 @@ public class GUIClient extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Responsable to save the "Help" event
+     * @param evt Returns the "Help"
+     */
     private void optionHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionHelpActionPerformed
         DialogMessages dialog = new DialogMessages(this, true, "Help");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_optionHelpActionPerformed
-
+    /**
+     * Responsable to save the "About" event 
+     * @param evt Returns the "About"
+     */
     private void optionAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionAboutActionPerformed
         DialogMessages dialog = new DialogMessages(this, true, "About");
         dialog.setLocationRelativeTo(this);
@@ -187,6 +193,7 @@ public class GUIClient extends javax.swing.JFrame {
     }//GEN-LAST:event_optionAboutActionPerformed
 
     /**
+     * Responsable to initialize the program with the main and turn visible the Interface Graphic
      * @param args the command line arguments
      */
     public static void main(String args[]) {

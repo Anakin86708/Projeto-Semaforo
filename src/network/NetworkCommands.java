@@ -8,10 +8,19 @@ package network;
 import java.io.Serializable;
 
 /**
- * Define os comandos que podem ser enviados pela rede
+ * Define commands that can be sent over through the network
  *
  * @author silva
  */
 public enum NetworkCommands implements Serializable {
-    NEXTSTAGE, STOP;
+
+    /**
+     * "NEXTSTAGE" constant
+     */
+    NEXTSTAGE,
+
+    /**
+     * "STOP" constant
+     */
+    STOP;
 }

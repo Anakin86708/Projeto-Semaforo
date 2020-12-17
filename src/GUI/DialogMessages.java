@@ -13,7 +13,7 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * Responsable to create the Dialog Messages's Interface Graphic
  * @author silva
  */
 public class DialogMessages extends javax.swing.JDialog {
@@ -29,6 +29,10 @@ public class DialogMessages extends javax.swing.JDialog {
         this.labelHeader.setText(name);
         displayMessage(name);
     }
+    /**
+     * Responsable to show the message of the Error or to save the localization file
+     * @param name that will be to save 
+     */
     
     private void displayMessage(String name) {
         try {
@@ -41,7 +45,13 @@ public class DialogMessages extends javax.swing.JDialog {
             this.dispose();
         }
     }
-    
+    /**
+     * Responsable to read the FileName and its loading   
+     * @param fileName String received from the Server
+     * @return the Final Text (String)
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     private String readTextFromFile(String fileName) throws FileNotFoundException, IOException {
         StringBuilder finalText = new StringBuilder();
         try ( BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)))) {
@@ -166,7 +176,10 @@ public class DialogMessages extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Responsable to show the Event Dispose 
+     * @param evt Show the event
+     */
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed

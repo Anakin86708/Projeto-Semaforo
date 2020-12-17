@@ -3,12 +3,26 @@ package resources;
 import java.io.Serializable;
 
 /**
- * Valores que podem ser atribuidos ao semáforo
+ * Values this can be to atribuited for traffic lights 
  *
  * @author silva
  */
 public enum StatusSemaphore implements Serializable {
-    RED, YELLOW, GREEN;
+
+    /**
+     * "Red" Option
+     */
+    RED,
+
+    /**
+     *"Yellow" Option
+     */
+    YELLOW,
+
+    /**
+     * "Green" Option
+     */
+    GREEN;
 
     private StatusSemaphore actualState;
 
@@ -17,16 +31,16 @@ public enum StatusSemaphore implements Serializable {
     }
 
     /**
-     * Obtêm o valor atual do semáforo
+     * Get the current semaphore value
      *
-     * @return constante com o estado
+     * @return the constant with the state
      */
     public StatusSemaphore getActualState() {
         return actualState;
     }
 
     /**
-     * Possibilita fazer a troca para o próximo estágio do semáforo
+     * It enables to make the change for the next semaphore's stage
      */
     public void changeStatus() {
         switch (actualState) {

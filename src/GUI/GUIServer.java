@@ -9,7 +9,7 @@ import java.util.Timer;
 import server.ServerSemaphore;
 
 /**
- *
+ * Responsable to create the Server's Interface Graphic
  * @author Leo
  */
 public class GUIServer extends javax.swing.JFrame {
@@ -151,19 +151,29 @@ public class GUIServer extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Responsable to manage the "Help" Event
+     * @param evt Help Event
+     */
     private void optionHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionHelpActionPerformed
         DialogMessages dialog = new DialogMessages(this, true, "Help");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_optionHelpActionPerformed
-
+    /**
+     * Responsable to manage the "About" Event
+     * @param evt About Event
+     */
     private void optionAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionAboutActionPerformed
         DialogMessages dialog = new DialogMessages(this, true, "About");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_optionAboutActionPerformed
     
+    /**
+     * Responsable to write in the Space of Log 
+     * @param sb Show in the area the transactions 
+     */
     public void writeOnLog(StringBuilder sb) {
         logArea.append(sb.toString());
     }

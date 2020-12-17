@@ -19,8 +19,7 @@ import network.ClientRepresentation;
 import network.NetworkCommands;
 
 /**
- * Responsável por gerenciar a comunicação de rede do servidor
- *
+ * Responsable to manage the network communication from the server
  * @author silva
  */
 public class NetworkServer implements Runnable {
@@ -30,11 +29,18 @@ public class NetworkServer implements Runnable {
     private static int port = 25556; // Porta fixa do servidor a ser ouvida;
     private List<ClientRepresentation> avaliableClients;
 
+    /**
+     * Responsable to create the Array List with the available Clients
+     */
     public NetworkServer() {
         this.keepRunning = true;
         this.avaliableClients = new ArrayList<>();
     }
 
+    /**
+     * Responsable to catch the Address's Number from server,
+     * @return the Adrress's Number or Null
+     */
     public static InetAddress getAddressServer() {
         try {
             return InetAddress.getByName("192.168.0.107");
@@ -43,14 +49,26 @@ public class NetworkServer implements Runnable {
         }
     }
 
+    /**
+     * Responsable to catch the Port,
+     * @return the Port
+     */
     public static int getPort() {
         return port;
     }
     
+    /**
+     * Responsable to catch the Available Clients and 
+     * @return the Number of them
+     */
     public int getAvaliableClients() {
         return avaliableClients.size();
     }
 
+    /**
+     *  Responsable to initialize the Thread, and to create an object,
+     * @return the working of Thread 
+     */
     public Thread startThread() {
         Thread thread = new Thread(this);
         thread.start();
@@ -58,7 +76,7 @@ public class NetworkServer implements Runnable {
     }
 
     /**
-     * Deve receber informações de novos clientes que desejam se conectar
+     * Responsable for receiving information from new Clients who wish to connect
      */
     private void listenner() {
         ServerSocket serverSocket;
@@ -69,8 +87,7 @@ public class NetworkServer implements Runnable {
         }
         while (keepRunning) {
             try {
-                Socket socket = serverSocket.accept();  // Aguarda até que uma conexão seja estabelecida
-
+                Socket socket = serverSocket.accept();  // Wait for a connection
                 ClientRepresentation client = deserialization(socket);
                 avaliableClients.add(client);
             } catch (IOException ex) {
@@ -82,10 +99,9 @@ public class NetworkServer implements Runnable {
     }
 
     /**
-     * Realiza a deserialização de um objeto recebido pela rede
-     *
-     * @param socket socket com objeto
-     * @return informações do cliente
+     * To perform the deserialization of an object received by the network,
+     * @param socket Socket with the object
+     * @return Client's informations
      * @throws ClassNotFoundException
      * @throws IOException
      * @see ClientRepresentation
@@ -98,12 +114,12 @@ public class NetworkServer implements Runnable {
     }
 
     /**
-     * Deve enviar uma solicitação a todos os clientes para alterar o status
+     * Responsable to send a request to all Clients to change the status
      */
     public void changeSemaphoreStatus() {
         for (ClientRepresentation clientRepresentation : avaliableClients) {
             try {
-                // Envia o comando de alteração para todos os clientes listados
+                // To send the alteration command to the all of  Clients listed 
                 sendCommandChange(clientRepresentation, NetworkCommands.NEXTSTAGE);
             } catch (IOException ex) {
                 Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -113,7 +129,7 @@ public class NetworkServer implements Runnable {
 
     /**
      * Responsável por enviar um comando para determinado cliente
-     *
+     * Responsable to send a command to determinated client 
      * @param clientRepresentation
      * @param command
      * @throws IOException
@@ -132,6 +148,10 @@ public class NetworkServer implements Runnable {
         socket.send(packet);
     }
 
+    /**
+     * Responsable to create the Override method, 
+     * and its to initialize the listenner
+     */
     @Override
     public void run() {
         listenner();

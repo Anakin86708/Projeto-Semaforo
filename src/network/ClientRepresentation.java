@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 
 /**
- * Realiza a representação de um cliente para o servidor
+ * Represent a client to the server
  *
  * @author silva
  */
@@ -19,10 +19,9 @@ public class ClientRepresentation implements Serializable{
     private final int port;
 
     /**
-     * Informações de cada cliente
-     *
-     * @param address endereço que pode ser acessado pela rede
-     * @param port porta de escuta
+     * Information of each client
+     * @param address address address that can be accessed over the 
+     * @param port door listening door
      */
     public ClientRepresentation(InetAddress address, int port) {
         this.address = address;
@@ -30,18 +29,16 @@ public class ClientRepresentation implements Serializable{
     }
 
     /**
-     * Obtêm o endereço para o cliente
-     *
-     * @return
+     * Get the address for the user,
+     * @return the address 
      */
     public InetAddress getAddress() {
         return address;
     }
 
     /**
-     * Obtêm a porta de escuta
-     *
-     * @return
+     * Get the address for the listening door,
+     * @return the port
      */
     public int getPort() {
         return port;

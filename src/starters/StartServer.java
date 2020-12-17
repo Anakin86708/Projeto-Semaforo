@@ -8,11 +8,15 @@ package starters;
 import GUI.GUIServer;
 
 /**
- *
  * @author silva
  */
 public class StartServer {
 
+    /**
+     * It's the class that will initialize the "Server",
+     * calling its GUI.
+     * @param args Parameter "Run Server"
+     */
     public static void main(String args[]) {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

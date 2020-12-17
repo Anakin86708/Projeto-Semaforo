@@ -20,13 +20,16 @@ import network.NetworkCommands;
 import server.NetworkServer;
 
 /**
- *
+ * Responsible for creating the NetworkClient Class from Runnable
  * @author silva
  */
 public class NetworkClient implements Runnable {
 
     ClientRepresentation representation;
 
+    /**
+     * 
+     */
     public NetworkClient() {
         try {
             this.representation = new ClientRepresentation(InetAddress.getLocalHost(), generatePort());
@@ -38,6 +41,10 @@ public class NetworkClient implements Runnable {
         }
     }
 
+    /**
+     * Responsable to initialize the Thread, and to create an object,
+     * @return the working of Thread 
+     */
     public Thread startThread() {
         Thread thread = new Thread(this);
         thread.start();
@@ -45,7 +52,7 @@ public class NetworkClient implements Runnable {
     }
 
     /**
-     * Avisa ao servidor que um novo cliente está disponível
+     * Responsable for notifying the server that a new client is available
      */
     private void beaconToServer() throws IOException {
         Socket socket = new Socket(NetworkServer.getAddressServer(), NetworkServer.getPort());
@@ -53,7 +60,9 @@ public class NetworkClient implements Runnable {
         ObjectOutputStream objectStream = new ObjectOutputStream(stream);
         objectStream.writeObject(representation);
     }
-
+    /**
+     * Responsable for sending the information from new Clients who wish to connect
+     */
     private void listenner() {
         DatagramSocket socket;
         try {
@@ -69,7 +78,7 @@ public class NetworkClient implements Runnable {
 
                 NetworkCommands client = deserialization(packet);
                 if (client.equals(NetworkCommands.NEXTSTAGE)) {
-                    // Avançar semáforo
+                    // Semaphores 
                     System.out.println("AVANÇANDO...");
                 }
             } catch (IOException ex) {
@@ -79,9 +88,8 @@ public class NetworkClient implements Runnable {
     }
 
     /**
-     * Retorna uma nova porta que ainda não foi utilizada
-     *
-     * @return
+     * Responsable for  
+     * @return a new door that has not yet been used
      */
     private int generatePort() {
         try ( ServerSocket ss = new ServerSocket(0)) {
@@ -93,7 +101,11 @@ public class NetworkClient implements Runnable {
         }
         return -1;
     }
-
+    /**
+     * Responsable to analize if port is available or doesn't 
+     * @param port passed to ServerSocket
+     * @return Available Port's True or False
+     */
     private boolean isPortAvailable(int port) {
         try ( var ss = new ServerSocket(port);  var ds = new DatagramSocket(port)) {
             return true;
@@ -101,7 +113,12 @@ public class NetworkClient implements Runnable {
             return false;
         }
     }
-
+    /**
+     * Responsable to perform the deserialization of an object received by the network 
+     * @param packet the DatagramParcket's parameter 
+     * @return the Client or Null
+     * @throws IOException 
+     */
     private NetworkCommands deserialization(DatagramPacket packet) throws IOException {
         try {
             ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
@@ -112,6 +129,9 @@ public class NetworkClient implements Runnable {
         }
     }
 
+    /**
+     * Responsable to create the Override Method and to run the Listenner 
+     */
     @Override
     public void run() {
         listenner();

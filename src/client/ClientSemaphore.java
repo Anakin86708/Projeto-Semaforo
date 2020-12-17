@@ -8,7 +8,7 @@ package client;
 import GUI.GUIClient;
 
 /**
- *
+ * Class Semaphore, with the attributes guiServer, networkClient, clientThread 
  * @author silva
  */
 public class ClientSemaphore {
@@ -18,8 +18,8 @@ public class ClientSemaphore {
     private final Thread clientThread;
 
     /**
-     *
-     * @param guiServer
+     * The method ClientSemahore, who acess the Server, through by Client.
+     * @param guiServer Parameter Client Semaphore
      */
     public ClientSemaphore(GUIClient guiServer) {
         this.guiServer = guiServer;
