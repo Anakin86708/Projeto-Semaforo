@@ -26,12 +26,8 @@ import server.NetworkServer;
 public enum NetworkCommands implements Serializable {
     NEW, NEXTSTAGE, STOP;
 
-    public static final int BYTEARRAYSIZE = 1024;
-    private ClientRepresentation srcRepresentation;
-
-    public ClientRepresentation getSrcRepresentation() {
-        return srcRepresentation;
-    }
+    public static final int BYTEARRAYSIZE = 2048;
+    NetworkObject networkObject;
 
     /**
      * Responsável por enviar um comando para determinado cliente
@@ -41,7 +37,7 @@ public enum NetworkCommands implements Serializable {
      */
     public void sendCommandChangeTo(ClientRepresentation srcRepresentation, ClientRepresentation dstRepresentation) {
         try {
-            this.srcRepresentation = srcRepresentation;
+            this.networkObject = new NetworkObject(this, srcRepresentation);
             DatagramSocket socket = new DatagramSocket();
             ByteArrayOutputStream outputStream = serialize(socket);
             byte[] obj = outputStream.toByteArray();
@@ -56,7 +52,7 @@ public enum NetworkCommands implements Serializable {
     private ByteArrayOutputStream serialize(DatagramSocket socket) throws SocketException, IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(BYTEARRAYSIZE);
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-        objectOutputStream.writeObject(this);
+        objectOutputStream.writeObject(networkObject);
         objectOutputStream.close();
         return outputStream;
     }

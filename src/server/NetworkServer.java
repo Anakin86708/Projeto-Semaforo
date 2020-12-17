@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import network.ClientRepresentation;
 import network.NetworkCommands;
+import network.NetworkObject;
 import static resources.ExceptionHandler.errorDialog;
 
 /**
@@ -88,7 +89,7 @@ public class NetworkServer implements Runnable {
         try {
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             listennerDatagramSocket.receive(packet);
-            NetworkCommands command = deserialization(packet.getData());
+            NetworkObject command = deserialization(packet.getData());
             interpretCommand(command);
         } catch (IOException ex) {
             errorDialog(ex, "Error while listenning on server.\n");
@@ -107,30 +108,29 @@ public class NetworkServer implements Runnable {
      * @throws IOException
      * @see ClientRepresentation
      */
-    private NetworkCommands deserialization(byte[] data) throws IOException, ClassNotFoundException {
+    private NetworkObject deserialization(byte[] data) throws IOException, ClassNotFoundException {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
         ObjectInputStream objectStream = new ObjectInputStream(inputStream);
-        return (NetworkCommands) objectStream.readObject();
+        return (NetworkObject) objectStream.readObject();
     }
 
-    private void interpretCommand(NetworkCommands command) {
-        switch (command) {
+    private void interpretCommand(NetworkObject command) {
+        switch (command.getCommand()) {
             case NEW -> {
-                addNewClient(command);
+                addNewClient(command.getSrcRepresentation());
             }
             case STOP -> {
-                removeClient(command);
+                removeClient(command.getSrcRepresentation());
             }
         }
     }
 
-    private void addNewClient(NetworkCommands command) {
-        avaliableClients.add(command.getSrcRepresentation());  // Cliente está null
+    private void addNewClient(ClientRepresentation clientRepresentation) {
+        avaliableClients.add(clientRepresentation);  // Cliente está null
     }
 
-    private void removeClient(NetworkCommands command) {
+    private void removeClient(ClientRepresentation clientRequested) {
         // Remover o cliente da lista
-        ClientRepresentation clientRequested = command.getSrcRepresentation();
         this.avaliableClients.forEach((client) -> {
             if (client.getAddress().equals(clientRequested.getAddress())) {
                 this.avaliableClients.remove(client);
