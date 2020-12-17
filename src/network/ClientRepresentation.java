@@ -13,7 +13,7 @@ import java.net.InetAddress;
  *
  * @author silva
  */
-public class ClientRepresentation implements Serializable{
+public class ClientRepresentation{
 
     private final InetAddress address;
     private final int port;

@@ -5,7 +5,13 @@
  */
 package network;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+import static network.NetworkCommands.BYTEARRAYSIZE;
 
 /**
  *
@@ -27,6 +33,14 @@ public class NetworkObject implements Serializable {
 
     public ClientRepresentation getSrcRepresentation() {
         return srcRepresentation;
+    }
+    
+    public ByteArrayOutputStream serialize(DatagramSocket socket) throws SocketException, IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(BYTEARRAYSIZE);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+        objectOutputStream.writeObject(this);
+        objectOutputStream.close();
+        return outputStream;
     }
 
 }

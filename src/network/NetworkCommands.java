@@ -23,7 +23,7 @@ import server.NetworkServer;
  *
  * @author silva
  */
-public enum NetworkCommands implements Serializable {
+public enum NetworkCommands {
     NEW, NEXTSTAGE, STOP;
 
     public static final int BYTEARRAYSIZE = 2048;
@@ -39,7 +39,7 @@ public enum NetworkCommands implements Serializable {
         try {
             this.networkObject = new NetworkObject(this, srcRepresentation);
             DatagramSocket socket = new DatagramSocket();
-            ByteArrayOutputStream outputStream = serialize(socket);
+            ByteArrayOutputStream outputStream = this.networkObject.serialize(socket);
             byte[] obj = outputStream.toByteArray();
             outputStream.close();
             DatagramPacket packet = new DatagramPacket(obj, obj.length, dstRepresentation.getAddress(), dstRepresentation.getPort());
@@ -47,14 +47,6 @@ public enum NetworkCommands implements Serializable {
         } catch (IOException ex) {
             errorDialog(ex, "Error while sending object.\n");
         }
-    }
-
-    private ByteArrayOutputStream serialize(DatagramSocket socket) throws SocketException, IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(BYTEARRAYSIZE);
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-        objectOutputStream.writeObject(networkObject);
-        objectOutputStream.close();
-        return outputStream;
     }
 
     /**
