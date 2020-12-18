@@ -8,6 +8,7 @@ package GUI.Draw;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
+import resources.StageSemaphore;
 
 /**
  *
@@ -15,12 +16,12 @@ import javax.swing.Timer;
  */
 public class SemaphorePanel extends javax.swing.JPanel {
 
-    private final int nRed = 10; // sao os tempos, eu acho?
+    private final int nRed = 10; // tempo de duração de cada estado
     private final int nYellow = 4;
     private final int nGreen = 10;
-    
-    private int r, y, g;
-    
+
+    private int r, y, g; // gambiarra pra mudar o tempo.
+
     private Timer timer;
     
     /**
@@ -28,65 +29,60 @@ public class SemaphorePanel extends javax.swing.JPanel {
      */
     public SemaphorePanel() {
         initComponents();
-        
-        red.setEnabled(true); // come'ca com o vermelho, eu acho?
+
+        red.setEnabled(true); // comeca no vermelho
         yellow.setEnabled(false);
         green.setEnabled(false);
+
         
-        start();
     }
-    
-    private void start()
-    {
-        int speed = 1000; // 1s
-        
-        r = nRed;
-        y = nYellow;
-        g = nGreen;
-        
-        
-        ActionListener action = new ActionListener(){
-            public void actionPerformed(ActionEvent evt)
-            {
-                if (r >= 0)
-                {
-                    red.setText(String.valueOf(r));
-                    r--;
-                }
-                else if (y >=0)
-                {
-                    yellow.setText(String.valueOf(y));
-                    y--; 
-                    
-                    red.setText(null);
-                    red.setEnabled(false);
-                    yellow.setEnabled(true);
-                }
-                else if (g >= 0)
-                {
-                    green.setText(String.valueOf(g));
-                    g--;
-                    
-                    yellow.setText(null);
-                    yellow.setEnabled(false);
-                    green.setEnabled(true);
-                }
-                else
-                {
-                    red.setEnabled(true);
-                    yellow.setEnabled(false);
-                    green.setEnabled(false);
-                    green.setText(null);
-                    
-                    r = nRed;
-                    y = nYellow;
-                    g = nGreen;
-                }
+
+    public void changeState(StageSemaphore stage) {
+        switch (stage) {
+            case RED -> {
+                changeRed();
             }
-        };
-        
-        timer = new Timer(speed, action);
-        timer.start();
+            case YELLOW -> {
+                changeYellow();
+            }
+            case GREEN -> {
+                changeGreen();
+            }
+        }
+    }
+
+    private void changeRed() {
+        int timerRed = nRed;
+
+        red.setEnabled(true);
+        yellow.setEnabled(false);
+        green.setEnabled(false);
+
+        red.setText(String.valueOf(timerRed));
+        timerRed--;
+    }
+
+    private void changeYellow() {
+        int timerYellow = nYellow;
+
+        red.setText(null);
+        yellow.setEnabled(true);
+        red.setEnabled(false);
+        green.setEnabled(false);
+
+        yellow.setText(String.valueOf(timerYellow));
+        timerYellow--;
+    }
+
+    private void changeGreen() {
+        int timerGreen = nGreen;
+
+        green.setEnabled(true);
+        yellow.setEnabled(false);
+        red.setEnabled(false);
+
+        green.setText(String.valueOf(timerGreen));
+        timerGreen--;
     }
 
     /**
