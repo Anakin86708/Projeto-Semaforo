@@ -7,15 +7,15 @@ package network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import static resources.ExceptionHandler.errorDialog;
+import resources.StageSemaphore;
 import server.NetworkServer;
 
 /**
@@ -23,8 +23,8 @@ import server.NetworkServer;
  *
  * @author silva
  */
-public enum NetworkCommands implements Serializable{
-    NEW, NEXTSTAGE, STOP, SERVER_STOP;
+public enum NetworkCommands implements Serializable {
+    NEW, NEXTSTAGE, STOP, SERVER_STOP, REQUEST_STAGE;
 
     public static final int BYTEARRAYSIZE = 2048;
     NetworkObject networkObject;
@@ -35,7 +35,7 @@ public enum NetworkCommands implements Serializable{
      * @param srcRepresentation
      * @param dstRepresentation
      */
-    public void sendCommandChangeTo(ClientRepresentation srcRepresentation, ClientRepresentation dstRepresentation) {
+    public void sendCommandFromTo(ClientRepresentation srcRepresentation, ClientRepresentation dstRepresentation) {
         try {
             this.networkObject = new NetworkObject(this, srcRepresentation);
             DatagramSocket socket = new DatagramSocket();
@@ -54,8 +54,32 @@ public enum NetworkCommands implements Serializable{
      *
      * @param srcRepresentation
      */
-    public void sendCommandChangeToServer(ClientRepresentation srcRepresentation) {
-        sendCommandChangeTo(srcRepresentation, new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()));
+    public void sendCommandToServer(ClientRepresentation srcRepresentation) {
+        sendCommandFromTo(srcRepresentation, new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()));
+    }
+    
+    public byte[] getClientStageSemaphore(ClientRepresentation dstRepresentation) {
+        try {
+            DatagramSocket reciveSocket = new DatagramSocket();
+            sendCommandFromTo(new ClientRepresentation(NetworkServer.getAddressServer(), reciveSocket.getLocalPort()), dstRepresentation);
+            return reciveClientStageSemaphore(reciveSocket);
+        } catch (SocketException ex) {
+            errorDialog(ex, "Error while sending object.\n");
+            return null;
+        }
+    }
+
+    private byte[] reciveClientStageSemaphore(DatagramSocket reciveSocket) {
+        try {
+            byte[] buf = new byte[BYTEARRAYSIZE];
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            reciveSocket.receive(packet);
+            InetAddress srcClient = packet.getAddress();
+            return packet.getData();
+        } catch (IOException ex) {
+            errorDialog(ex, "Error while reciving object.\n");
+            return null;
+        }
     }
 
 }

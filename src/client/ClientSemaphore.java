@@ -40,4 +40,8 @@ public class ClientSemaphore {
         guiClient.writeText(this.stage.toString());
     }
 
+    public StageSemaphore getStage() {
+        return stage;
+    }
+    
 }

@@ -18,7 +18,7 @@ public class StartServer {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                GUI.GUIServer server = new GUIServer();
+                GUIServer server = new GUIServer();
                 server.setLocationRelativeTo(null);
                 server.setVisible(true);
             }

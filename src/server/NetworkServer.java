@@ -12,10 +12,14 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import network.ClientRepresentation;
 import network.NetworkCommands;
 import network.NetworkObject;
+import resources.ExceptionHandler;
 import static resources.ExceptionHandler.errorDialog;
+import resources.StageSemaphore;
 
 /**
  * Responsável por gerenciar a comunicação de rede do servidor
@@ -87,7 +91,7 @@ public class NetworkServer implements Runnable {
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             listennerDatagramSocket.receive(packet);
             InetAddress srcClient = packet.getAddress();
-            NetworkObject command = deserialization(packet.getData());
+            NetworkObject command = (NetworkObject) deserialization(packet.getData());
             interpretCommand(command, srcClient);
         } catch (IOException ex) {
             errorDialog(ex, "Error while listenning on server.\n");
@@ -105,10 +109,10 @@ public class NetworkServer implements Runnable {
      * @throws IOException
      * @see ClientRepresentation
      */
-    private NetworkObject deserialization(byte[] data) throws IOException, ClassNotFoundException {
+    private Object deserialization(byte[] data) throws IOException, ClassNotFoundException {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
         ObjectInputStream objectStream = new ObjectInputStream(inputStream);
-        return (NetworkObject) objectStream.readObject();
+        return objectStream.readObject();
     }
 
     private void interpretCommand(NetworkObject command, InetAddress srcClient) {
@@ -145,12 +149,22 @@ public class NetworkServer implements Runnable {
      */
     public void changeSemaphoreStatus() {
         this.avaliableClients.forEach(clientRepresentation -> {
-            NetworkCommands.NEXTSTAGE.sendCommandChangeTo(new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()), clientRepresentation);
+            NetworkCommands.NEXTSTAGE.sendCommandFromTo(new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()), clientRepresentation);
         });
     }
 
     public void stop() {
         this.keepRunning = false;
         this.listennerDatagramSocket.close();
+    }
+
+    StageSemaphore requestClientStage(ClientRepresentation client) {
+        try {
+            byte[] data = NetworkCommands.REQUEST_STAGE.getClientStageSemaphore(client);
+            return (StageSemaphore) deserialization(data);
+        } catch (IOException | ClassNotFoundException ex) {
+            ExceptionHandler.errorDialog(ex, "Response error\n");
+            return null;
+        }
     }
 }

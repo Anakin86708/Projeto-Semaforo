@@ -3,26 +3,23 @@ package client;
 import GUI.GUIClient;
 import java.awt.HeadlessException;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import network.ClientRepresentation;
 import network.NetworkCommands;
 import network.NetworkObject;
-import static resources.ExceptionHandler.errorDialog;
+import resources.ExceptionHandler;
+import resources.StageSemaphore;
 import server.NetworkServer;
+import static resources.ExceptionHandler.errorDialog;
 
 /**
  *
@@ -41,12 +38,30 @@ public class NetworkClient implements Runnable {
         try {
             this.clientRepresentation = new ClientRepresentation(InetAddress.getLocalHost(), generatePort());
             beaconToServer();
-        } catch (UnknownHostException ex) {
-            JOptionPane.showMessageDialog(null, "Unable to bind to network interface. Aborting...\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(NetworkClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(NetworkClient.class.getName()).log(Level.SEVERE, null, ex);
+            ExceptionHandler.errorDialog(ex, "Unable to bind to network interface. Aborting...\n");
         }
+    }
+    
+    /**
+     * Retorna uma nova porta que ainda não foi utilizada
+     *
+     * @return
+     */
+    private int generatePort() {
+        try ( ServerSocket ss = new ServerSocket(0)) {
+            if (ss != null && ss.getLocalPort() > 0) {
+                return ss.getLocalPort();
+            }
+        } catch (IOException ex) {
+            ExceptionHandler.errorDialog(ex, "Error while getting port for client.\n");
+            System.exit(1);
+        }
+        return -1;
+    }
+    
+    private void beaconToServer() throws IOException {
+        NetworkCommands.NEW.sendCommandToServer(this.clientRepresentation);
     }
 
     public Thread startThread() {
@@ -54,13 +69,15 @@ public class NetworkClient implements Runnable {
         thread.start();
         return thread;
     }
+    
+    @Override
+    public void run() {
+        listenner();
+    }
 
     /**
      * Avisa ao servidor que um novo cliente está disponível
      */
-    private void beaconToServer() throws IOException {
-        NetworkCommands.NEW.sendCommandChangeToServer(this.clientRepresentation);
-    }
 
     /**
      * Responsável por acompanhar e receber comandos pela rede
@@ -77,7 +94,7 @@ public class NetworkClient implements Runnable {
             errorDialog(ex, "Server socket error.\n");
         }
     }
-    
+
     private void recivePacket(byte[] buf) throws HeadlessException {
         try {
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -115,35 +132,28 @@ public class NetworkClient implements Runnable {
                 sendEndCommand();
                 GUIClient.close();
             }
-        }
-    }
-
-    /**
-     * Retorna uma nova porta que ainda não foi utilizada
-     *
-     * @return
-     */
-    private int generatePort() {
-        try ( ServerSocket ss = new ServerSocket(0)) {
-            if (ss != null && ss.getLocalPort() > 0) {
-                return ss.getLocalPort();
+            case REQUEST_STAGE -> {
+                sendStageToServer(command.getSrcRepresentation().getPort());
             }
-        } catch (IOException ex) {
-            Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, "Error while getting port for client.\n"+ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
         }
-        return -1;
-    }
-
-    @Override
-    public void run() {
-        listenner();
     }
     
     public void sendEndCommand() {
         this.keepRunning = false;
-        NetworkCommands.STOP.sendCommandChangeToServer(clientRepresentation);
+        NetworkCommands.STOP.sendCommandToServer(clientRepresentation);
     }
     
+      private void sendStageToServer(int serverStagePort) {
+        try {
+            DatagramSocket socket = new DatagramSocket();
+            ByteArrayOutputStream outputStream = this.semaphore.getStage().serialize(socket);
+            byte[] obj = outputStream.toByteArray();
+            outputStream.close();
+            DatagramPacket packet = new DatagramPacket(obj, obj.length, NetworkServer.getAddressServer(), serverStagePort);
+            socket.send(packet);
+        } catch (IOException ex) {
+            ExceptionHandler.errorDialog(ex, "Error sending response to server\n");
+        }
+    }
+
 }

@@ -1,6 +1,16 @@
 package resources;
 
+import client.NetworkClient;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static network.NetworkCommands.BYTEARRAYSIZE;
 
 /**
  * Valores que podem ser atribuidos ao semáforo
@@ -60,5 +70,13 @@ public enum StageSemaphore implements Serializable {
         }
         return getActualState();
     }
+    
+    public ByteArrayOutputStream serialize(DatagramSocket socket) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(BYTEARRAYSIZE);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+        objectOutputStream.writeObject(this);
+        objectOutputStream.close();
+        return outputStream;
+      }
 
 }
