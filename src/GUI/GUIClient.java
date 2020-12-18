@@ -36,7 +36,8 @@ public class GUIClient extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         containerPanel = new javax.swing.JPanel();
         trafficLight = new javax.swing.JPanel();
-        canvas3 = new java.awt.Canvas();
+        jPanel1 = new javax.swing.JPanel();
+        semaphorePanel1 = new GUI.Draw.SemaphorePanel();
         trafficLightCounter = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         footer = new javax.swing.JPanel();
@@ -58,6 +59,23 @@ public class GUIClient extends javax.swing.JFrame {
 
         containerPanel.setBackground(new java.awt.Color(153, 0, 204));
 
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(semaphorePanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(semaphorePanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
         trafficLightCounter.setBackground(new java.awt.Color(204, 204, 0));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
@@ -70,7 +88,7 @@ public class GUIClient extends javax.swing.JFrame {
             trafficLightCounterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(trafficLightCounterLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         trafficLightCounterLayout.setVerticalGroup(
@@ -86,8 +104,8 @@ public class GUIClient extends javax.swing.JFrame {
         trafficLightLayout.setHorizontalGroup(
             trafficLightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, trafficLightLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(canvas3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(trafficLightCounter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -97,7 +115,9 @@ public class GUIClient extends javax.swing.JFrame {
             .addGroup(trafficLightLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(trafficLightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(canvas3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(trafficLightLayout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(trafficLightCounter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -107,16 +127,16 @@ public class GUIClient extends javax.swing.JFrame {
         containerPanelLayout.setHorizontalGroup(
             containerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerPanelLayout.createSequentialGroup()
-                .addGap(145, 145, 145)
+                .addGap(196, 196, 196)
                 .addComponent(trafficLight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(141, 141, 141))
+                .addGap(169, 169, 169))
         );
         containerPanelLayout.setVerticalGroup(
             containerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerPanelLayout.createSequentialGroup()
-                .addGap(54, 54, 54)
+                .addGap(51, 51, 51)
                 .addComponent(trafficLight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(38, 38, 38))
+                .addGap(41, 41, 41))
         );
 
         footer.setBackground(new java.awt.Color(0, 204, 204));
@@ -239,17 +259,18 @@ public class GUIClient extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private java.awt.Canvas canvas3;
     private javax.swing.JPanel containerPanel;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JPanel footer;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem optionAbout;
     private javax.swing.JMenuItem optionExit;
     private javax.swing.JMenuItem optionHelp;
+    private GUI.Draw.SemaphorePanel semaphorePanel1;
     private javax.swing.JPanel trafficLight;
     private javax.swing.JPanel trafficLightCounter;
     // End of variables declaration//GEN-END:variables
