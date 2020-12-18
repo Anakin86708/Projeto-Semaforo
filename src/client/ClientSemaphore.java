@@ -28,7 +28,7 @@ public class ClientSemaphore {
         this.networkClient = new NetworkClient(this);
         this.clientThread = this.networkClient.startThread();
         this.stage = StageSemaphore.RED;
-        guiClient.writeText(this.stage.toString());
+        guiClient.writeText(this.stage);
     }
 
     public NetworkClient getNetworkClient() {
@@ -37,7 +37,7 @@ public class ClientSemaphore {
 
     public void changeStage() {
         this.stage = this.stage.changeStage();
-        guiClient.writeText(this.stage.toString());
+        guiClient.writeText(this.stage);
     }
 
     public StageSemaphore getStage() {

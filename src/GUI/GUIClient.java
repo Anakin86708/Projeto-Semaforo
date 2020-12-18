@@ -7,6 +7,7 @@ package GUI;
 
 import client.ClientSemaphore;
 import javax.swing.JOptionPane;
+import resources.StageSemaphore;
 
 /**
  *
@@ -212,8 +213,8 @@ public class GUIClient extends javax.swing.JFrame {
         dialog.setVisible(true);
     }//GEN-LAST:event_optionAboutActionPerformed
 
-    public void writeText(String text) {
-        this.jLabel1.setText(text);
+    public void writeText(StageSemaphore stage) {
+        this.semaphorePanel1.changeState(stage);
     }
     
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing

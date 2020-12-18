@@ -70,13 +70,13 @@ public enum StageSemaphore implements Serializable {
         }
         return getActualState();
     }
-    
+
     public ByteArrayOutputStream serialize(DatagramSocket socket) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(BYTEARRAYSIZE);
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
         objectOutputStream.writeObject(this);
         objectOutputStream.close();
         return outputStream;
-      }
+    }
 
 }
