@@ -15,6 +15,7 @@ import server.ServerSemaphore;
 public class GUIServer extends javax.swing.JFrame {
 
     private final ServerSemaphore semaphoreController;
+    public final static int PERIOD = 5000;
 
     /**
      * Creates new form GUIServer
@@ -22,15 +23,19 @@ public class GUIServer extends javax.swing.JFrame {
     public GUIServer() {
         initComponents();
         this.semaphoreController = new ServerSemaphore(this);
-        int period = 5000;
-        initializeLog(period);
+        initializeLog();
     }
 
-    private void initializeLog(int period) {
+    private void initializeLog() {
         Timer timer = new Timer();
         semaphoreController.initializeLog();
-        timer.scheduleAtFixedRate(semaphoreController, 0, period);
+        timer.scheduleAtFixedRate(semaphoreController, 0, PERIOD);
     }
+    
+    
+    
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
