@@ -37,10 +37,8 @@ public class GUIClient extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         containerPanel = new javax.swing.JPanel();
         trafficLight = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        semaphorePanel1 = new GUI.Draw.SemaphorePanel();
-        trafficLightCounter = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        semaphoreContainer = new javax.swing.JPanel();
+        semaphorePanel = new GUI.Draw.SemaphorePanel();
         footer = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -60,43 +58,20 @@ public class GUIClient extends javax.swing.JFrame {
 
         containerPanel.setBackground(new java.awt.Color(153, 0, 204));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout semaphoreContainerLayout = new javax.swing.GroupLayout(semaphoreContainer);
+        semaphoreContainer.setLayout(semaphoreContainerLayout);
+        semaphoreContainerLayout.setHorizontalGroup(
+            semaphoreContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, semaphoreContainerLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(semaphorePanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(semaphorePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        semaphoreContainerLayout.setVerticalGroup(
+            semaphoreContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, semaphoreContainerLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(semaphorePanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        trafficLightCounter.setBackground(new java.awt.Color(204, 204, 0));
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("-1");
-
-        javax.swing.GroupLayout trafficLightCounterLayout = new javax.swing.GroupLayout(trafficLightCounter);
-        trafficLightCounter.setLayout(trafficLightCounterLayout);
-        trafficLightCounterLayout.setHorizontalGroup(
-            trafficLightCounterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(trafficLightCounterLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        trafficLightCounterLayout.setVerticalGroup(
-            trafficLightCounterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, trafficLightCounterLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(semaphorePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -106,21 +81,15 @@ public class GUIClient extends javax.swing.JFrame {
             trafficLightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, trafficLightLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(trafficLightCounter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(semaphoreContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         trafficLightLayout.setVerticalGroup(
             trafficLightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(trafficLightLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(trafficLightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(trafficLightLayout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(trafficLightCounter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addComponent(semaphoreContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout containerPanelLayout = new javax.swing.GroupLayout(containerPanel);
@@ -214,7 +183,7 @@ public class GUIClient extends javax.swing.JFrame {
     }//GEN-LAST:event_optionAboutActionPerformed
 
     public void writeText(StageSemaphore stage) {
-        this.semaphorePanel1.changeState(stage);
+        this.semaphorePanel.changeState(stage);
     }
     
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -265,14 +234,12 @@ public class GUIClient extends javax.swing.JFrame {
     private javax.swing.JPanel footer;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem optionAbout;
     private javax.swing.JMenuItem optionExit;
     private javax.swing.JMenuItem optionHelp;
-    private GUI.Draw.SemaphorePanel semaphorePanel1;
+    private javax.swing.JPanel semaphoreContainer;
+    private GUI.Draw.SemaphorePanel semaphorePanel;
     private javax.swing.JPanel trafficLight;
-    private javax.swing.JPanel trafficLightCounter;
     // End of variables declaration//GEN-END:variables
 }

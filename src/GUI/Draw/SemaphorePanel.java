@@ -18,9 +18,11 @@ import resources.StageSemaphore;
 public class SemaphorePanel extends javax.swing.JPanel {
 
     private Timer timer;
-    private int semaphoreTime = GUIServer.PERIOD;
     private StageSemaphore currentStage;
-    
+    private final ActionListener action;
+    private final int SECOND = 1000;
+    private int semaphoreTime = GUIServer.PERIOD / SECOND;
+
     /**
      * Creates new form SemaphorePanel
      */
@@ -30,54 +32,53 @@ public class SemaphorePanel extends javax.swing.JPanel {
         red.setEnabled(true); // comeca no vermelho
         yellow.setEnabled(false);
         green.setEnabled(false);
-    }
-    
-    public void start()
-    {
-        int second = 1000; 
-        
-        ActionListener action = (ActionEvent evt) -> {
+
+        action = (ActionEvent evt) -> {
             semaphoreTime--;
             showTime();
         };
-        
-        timer = new Timer(second, action);
     }
-    
+
+    public void startTextShowTimer() {
+        this.semaphoreTime = GUIServer.PERIOD / SECOND;
+        
+        
+        try {
+            timer.stop();
+        } catch (NullPointerException e) {
+        }
+        timer = new Timer(SECOND, action);
+        timer.start();
+    }
+
     private void showTime() {
-        
+
         clearText();
-        
-        switch (currentStage)
-        {
-            case RED ->
-            {
+
+        switch (currentStage) {
+            case RED -> {
                 red.setText(String.valueOf(semaphoreTime));
             }
-            
-            case YELLOW ->
-            {
+
+            case YELLOW -> {
                 yellow.setText(String.valueOf(semaphoreTime));
             }
-            
-            case GREEN ->
-            {
+
+            case GREEN -> {
                 green.setText(String.valueOf(semaphoreTime));
             }
         }
     }
-    
-    private void clearText()
-    {
-        red.setEnabled(false);
-        yellow.setEnabled(false);
-        green.setEnabled(false);
+
+    private void clearText() {
+        red.setText(null);
+        yellow.setText(null);
+        green.setText(null);
     }
 
     public void changeState(StageSemaphore stage) {
-        
         this.currentStage = stage;
-        
+
         switch (stage) {
             case RED -> {
                 changeRed();
@@ -89,6 +90,7 @@ public class SemaphorePanel extends javax.swing.JPanel {
                 changeGreen();
             }
         }
+        startTextShowTimer();
     }
 
     private void changeRed() {
@@ -139,6 +141,7 @@ public class SemaphorePanel extends javax.swing.JPanel {
         green.setFont(new java.awt.Font("Ebrima", 0, 36)); // NOI18N
         green.setForeground(new java.awt.Color(255, 255, 51));
         green.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Draw/green-80.png"))); // NOI18N
+        green.setText("0");
         green.setOpaque(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -173,5 +176,4 @@ public class SemaphorePanel extends javax.swing.JPanel {
     private javax.swing.JLabel yellow;
     // End of variables declaration//GEN-END:variables
 
-    
 }
