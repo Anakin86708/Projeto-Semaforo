@@ -29,15 +29,10 @@ public class NetworkServer implements Runnable {
     private static final int PORT = 25556;
     private final List<ClientRepresentation> avaliableClients;
     private DatagramSocket listennerDatagramSocket;
-    private static String serverIP;
 
     public NetworkServer() {
         this.keepRunning = true;
         this.avaliableClients = new ArrayList<>();
-    }
-
-    public static void setServerIP(String serverIP) {
-        NetworkServer.serverIP = serverIP;
     }
 
     /**
@@ -45,6 +40,7 @@ public class NetworkServer implements Runnable {
      * @return 
      */
     public static InetAddress getAddressServer() {
+        String serverIP = "192.168.15.22";
         try {
             return InetAddress.getByName(serverIP);
         } catch (UnknownHostException ex) {
