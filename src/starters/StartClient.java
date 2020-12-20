@@ -2,10 +2,6 @@ package starters;
 
 import GUI.GUIClient;
 
-/**
- *
- * @author ariel
- */
 public class StartClient implements MainStarter {
 
     @Override

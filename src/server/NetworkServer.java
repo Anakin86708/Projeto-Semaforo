@@ -12,8 +12,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import network.ClientRepresentation;
 import network.NetworkCommands;
 import network.NetworkObject;
@@ -22,14 +20,13 @@ import static resources.ExceptionHandler.errorDialog;
 import resources.StageSemaphore;
 
 /**
- * Responsável por gerenciar a comunicação de rede do servidor
+ * Manage server network
  *
- * @author silva
  */
 public class NetworkServer implements Runnable {
 
     private volatile boolean keepRunning;
-    private static final int PORT = 25556; // Porta fixa do servidor a ser ouvida;
+    private static final int PORT = 25556;
     private final List<ClientRepresentation> avaliableClients;
     private DatagramSocket listennerDatagramSocket;
 
@@ -38,6 +35,10 @@ public class NetworkServer implements Runnable {
         this.avaliableClients = new ArrayList<>();
     }
 
+    /**
+     * Returns the IP address for the server, which has been kept fixed as specified
+     * @return 
+     */
     public static InetAddress getAddressServer() {
         String serverIP = "192.168.15.22";
         try {
@@ -70,9 +71,6 @@ public class NetworkServer implements Runnable {
         listener();
     }
 
-    /**
-     * Deve receber informações de novos clientes que desejam se conectar
-     */
     private void listener() {
         try {
             byte[] buf = new byte[NetworkCommands.BYTEARRAYSIZE];
@@ -100,15 +98,6 @@ public class NetworkServer implements Runnable {
         }
     }
 
-    /**
-     * Realiza a deserialização de um objeto recebido pela rede
-     *
-     * @param socket socket com objeto
-     * @return informações do cliente
-     * @throws ClassNotFoundException
-     * @throws IOException
-     * @see ClientRepresentation
-     */
     private Object deserialization(byte[] data) throws IOException, ClassNotFoundException {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
         ObjectInputStream objectStream = new ObjectInputStream(inputStream);
@@ -144,10 +133,7 @@ public class NetworkServer implements Runnable {
         }
     }
 
-    /**
-     * Deve enviar uma solicitação a todos os clientes para alterar o status
-     */
-    public void changeSemaphoreStatus() {
+    public void changeAllSemaphoreStatus() {
         this.avaliableClients.forEach(clientRepresentation -> {
             NetworkCommands.NEXTSTAGE.sendCommandFromTo(new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()), clientRepresentation);
         });

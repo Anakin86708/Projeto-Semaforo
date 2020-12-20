@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GUI;
 
 import java.io.BufferedReader;
@@ -13,23 +8,27 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author silva
+ * Used to display help and about messages
  */
 public class DialogMessages extends javax.swing.JDialog {
 
     /**
      * Creates new form DialogMessages
+     *
+     * @param parent referance frame for alignment
+     * @param modal when true, it is necessary to close this window to interact
+     * again with the previous one
+     * @param name name for file
      */
     public DialogMessages(java.awt.Frame parent, boolean modal, String name) {
         super(parent, modal);
         initComponents();
-        
+
         this.setTitle(name);
         this.labelHeader.setText(name);
         displayMessage(name);
     }
-    
+
     private void displayMessage(String name) {
         try {
             String localDir = System.getProperty("user.dir");
@@ -41,19 +40,19 @@ public class DialogMessages extends javax.swing.JDialog {
             this.dispose();
         }
     }
-    
+
     private String readTextFromFile(String fileName) throws FileNotFoundException, IOException {
         StringBuilder finalText = new StringBuilder();
         try ( BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)))) {
             String buffer;
-            
+
             while ((buffer = reader.readLine()) != null) {
                 finalText.append(buffer).append("\n");
             }
         } catch (NullPointerException | IOException e) {
             JOptionPane.showMessageDialog(this, "Error loading text\n" + e.getMessage());
         }
-        
+
         return (finalText.toString());
     }
 

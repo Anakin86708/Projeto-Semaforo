@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GUI.Draw;
 
 import GUI.GUIServer;
@@ -12,28 +7,24 @@ import javax.swing.Timer;
 import resources.StageSemaphore;
 
 /**
- *
- * @author silva
+ * Panel responsable for drawing semaphore
  */
 public class SemaphorePanel extends javax.swing.JPanel {
 
     private Timer timer;
     private StageSemaphore currentStage;
-    private final ActionListener action;
+    private final ActionListener timerAction;
     private final int SECOND = 1000;
     private int semaphoreTime = GUIServer.PERIOD / SECOND;
 
-    /**
-     * Creates new form SemaphorePanel
-     */
     public SemaphorePanel() {
         initComponents();
 
-        red.setEnabled(true); // comeca no vermelho
+        red.setEnabled(true);
         yellow.setEnabled(false);
         green.setEnabled(false);
 
-        action = (ActionEvent evt) -> {
+        timerAction = (ActionEvent evt) -> {
             semaphoreTime--;
             showTime();
         };
@@ -41,18 +32,16 @@ public class SemaphorePanel extends javax.swing.JPanel {
 
     public void startTextShowTimer() {
         this.semaphoreTime = GUIServer.PERIOD / SECOND;
-        
-        
+
         try {
             timer.stop();
         } catch (NullPointerException e) {
         }
-        timer = new Timer(SECOND, action);
+        timer = new Timer(SECOND, timerAction);
         timer.start();
     }
 
     private void showTime() {
-
         clearText();
 
         switch (currentStage) {

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package network;
 
 import java.io.ByteArrayOutputStream;
@@ -12,16 +7,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static resources.ExceptionHandler.errorDialog;
-import resources.StageSemaphore;
 import server.NetworkServer;
 
 /**
- * Define os comandos que podem ser enviados pela rede
+ * Defines commands that can be sent over the network
  *
- * @author silva
  */
 public enum NetworkCommands implements Serializable {
     NEW, NEXTSTAGE, STOP, SERVER_STOP, REQUEST_STAGE;
@@ -30,10 +21,10 @@ public enum NetworkCommands implements Serializable {
     NetworkObject networkObject;
 
     /**
-     * Responsável por enviar um comando para determinado cliente
+     * Responsible for sending a command to a specific customer
      *
-     * @param srcRepresentation
-     * @param dstRepresentation
+     * @param srcRepresentation source
+     * @param dstRepresentation destination
      */
     public void sendCommandFromTo(ClientRepresentation srcRepresentation, ClientRepresentation dstRepresentation) {
         try {
@@ -50,14 +41,20 @@ public enum NetworkCommands implements Serializable {
     }
 
     /**
-     * Envia mensagens para o servidor
+     * Send messages to server
      *
-     * @param srcRepresentation
+     * @param srcRepresentation source
      */
     public void sendCommandToServer(ClientRepresentation srcRepresentation) {
         sendCommandFromTo(srcRepresentation, new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()));
     }
-    
+
+    /**
+     * Sends a request and returns the client stage
+     *
+     * @param dstRepresentation client
+     * @return current stage from client
+     */
     public byte[] getClientStageSemaphore(ClientRepresentation dstRepresentation) {
         try {
             DatagramSocket reciveSocket = new DatagramSocket();
@@ -69,6 +66,12 @@ public enum NetworkCommands implements Serializable {
         }
     }
 
+    /**
+     * Waiting for client response
+     *
+     * @param reciveSocket listening socket
+     * @return serialized stage
+     */
     private byte[] reciveClientStageSemaphore(DatagramSocket reciveSocket) {
         try {
             byte[] buf = new byte[BYTEARRAYSIZE];

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GUI;
 
 import java.util.Timer;
@@ -26,16 +21,14 @@ public class GUIServer extends javax.swing.JFrame {
         initializeLog();
     }
 
+    /**
+     * Initial text for server log
+     */
     private void initializeLog() {
         Timer timer = new Timer();
         semaphoreController.initializeLog();
         timer.scheduleAtFixedRate(semaphoreController, 0, PERIOD);
     }
-    
-    
-    
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -185,6 +178,7 @@ public class GUIServer extends javax.swing.JFrame {
     }//GEN-LAST:event_showAbout
 
     private void exit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exit
+        closeAllClients();
         stopThreadsAndExit();
     }//GEN-LAST:event_exit
 

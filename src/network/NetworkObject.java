@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package network;
 
 import java.io.ByteArrayOutputStream;
@@ -14,8 +9,8 @@ import java.net.SocketException;
 import static network.NetworkCommands.BYTEARRAYSIZE;
 
 /**
- *
- * @author silva
+ * Object sent over the network, containing the command and necessary
+ * information
  */
 public class NetworkObject implements Serializable {
 
@@ -34,7 +29,7 @@ public class NetworkObject implements Serializable {
     public ClientRepresentation getSrcRepresentation() {
         return srcRepresentation;
     }
-    
+
     public ByteArrayOutputStream serialize(DatagramSocket socket) throws SocketException, IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(BYTEARRAYSIZE);
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);

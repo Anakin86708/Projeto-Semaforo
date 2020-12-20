@@ -1,16 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package client;
 
 import GUI.GUIClient;
 import resources.StageSemaphore;
 
 /**
- *
- * @author silva
+ * Manage comunication between client GUI and client network, as well stage
+ * change
  */
 public class ClientSemaphore {
 
@@ -20,6 +15,7 @@ public class ClientSemaphore {
     private StageSemaphore stage;
 
     /**
+     * Binds all instances required for control
      *
      * @param guiServer
      */
@@ -28,7 +24,7 @@ public class ClientSemaphore {
         this.networkClient = new NetworkClient(this);
         this.clientThread = this.networkClient.startThread();
         this.stage = StageSemaphore.RED;
-        guiClient.writeText(this.stage);
+        guiClient.changeColorState(this.stage);
     }
 
     public NetworkClient getNetworkClient() {
@@ -37,11 +33,11 @@ public class ClientSemaphore {
 
     public void changeStage() {
         this.stage = this.stage.changeStage();
-        guiClient.writeText(this.stage);
+        guiClient.changeColorState(this.stage);
     }
 
     public StageSemaphore getStage() {
         return stage;
     }
-    
+
 }

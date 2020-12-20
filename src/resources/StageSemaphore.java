@@ -1,21 +1,14 @@
 package resources;
 
-import client.NetworkClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static network.NetworkCommands.BYTEARRAYSIZE;
 
 /**
- * Valores que podem ser atribuidos ao semáforo
- *
- * @author silva
+ * All possible semaphore stages
  */
 public enum StageSemaphore implements Serializable {
     RED(0), YELLOW(1), GREEN(2);
@@ -26,11 +19,6 @@ public enum StageSemaphore implements Serializable {
         this.actualStage = actualStage;
     }
 
-    /**
-     * Obtêm o valor atual do semáforo
-     *
-     * @return constante com o estado
-     */
     public StageSemaphore getActualState() {
         switch (actualStage) {
             case 0 -> {
@@ -48,11 +36,6 @@ public enum StageSemaphore implements Serializable {
         }
     }
 
-    /**
-     * Possibilita fazer a troca para o próximo estágio do semáforo
-     *
-     * @return
-     */
     public StageSemaphore changeStage() {
         switch (actualStage) {
             case 0 -> {

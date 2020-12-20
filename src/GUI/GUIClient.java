@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GUI;
 
 import client.ClientSemaphore;
-import javax.swing.JOptionPane;
 import resources.StageSemaphore;
 
 /**
@@ -14,7 +8,7 @@ import resources.StageSemaphore;
  * @author Leo
  */
 public class GUIClient extends javax.swing.JFrame {
-    
+
     private final ClientSemaphore semaphoreController;
 
     /**
@@ -102,16 +96,16 @@ public class GUIClient extends javax.swing.JFrame {
         containerPanelLayout.setHorizontalGroup(
             containerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerPanelLayout.createSequentialGroup()
-                .addGap(196, 196, 196)
+                .addGap(42, 42, 42)
                 .addComponent(trafficLight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(169, 169, 169))
+                .addGap(42, 42, 42))
         );
         containerPanelLayout.setVerticalGroup(
             containerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(containerPanelLayout.createSequentialGroup()
-                .addGap(51, 51, 51)
+                .addGap(42, 42, 42)
                 .addComponent(trafficLight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(41, 41, 41))
+                .addGap(42, 42, 42))
         );
 
         footer.setBackground(new java.awt.Color(255, 255, 255));
@@ -130,6 +124,11 @@ public class GUIClient extends javax.swing.JFrame {
         fileMenu.setText("File");
 
         optionExit.setText("Exit");
+        optionExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optionExitActionPerformed(evt);
+            }
+        });
         fileMenu.add(optionExit);
 
         menuBar.add(fileMenu);
@@ -139,7 +138,7 @@ public class GUIClient extends javax.swing.JFrame {
         optionHelp.setText("Help");
         optionHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optionHelpActionPerformed(evt);
+                displayHelp(evt);
             }
         });
         helpMenu.add(optionHelp);
@@ -147,7 +146,7 @@ public class GUIClient extends javax.swing.JFrame {
         optionAbout.setText("About");
         optionAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optionAboutActionPerformed(evt);
+                displayAbout(evt);
             }
         });
         helpMenu.add(optionAbout);
@@ -175,25 +174,30 @@ public class GUIClient extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void optionHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionHelpActionPerformed
+    private void displayHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayHelp
         DialogMessages dialog = new DialogMessages(this, true, "Help");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-    }//GEN-LAST:event_optionHelpActionPerformed
+    }//GEN-LAST:event_displayHelp
 
-    private void optionAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionAboutActionPerformed
+    private void displayAbout(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayAbout
         DialogMessages dialog = new DialogMessages(this, true, "About");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-    }//GEN-LAST:event_optionAboutActionPerformed
+    }//GEN-LAST:event_displayAbout
 
-    public void writeText(StageSemaphore stage) {
+    public void changeColorState(StageSemaphore stage) {
         this.semaphorePanel.changeState(stage);
     }
-    
+
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         this.semaphoreController.getNetworkClient().sendEndCommand();
     }//GEN-LAST:event_formWindowClosing
+
+    private void optionExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionExitActionPerformed
+        this.semaphoreController.getNetworkClient().sendEndCommand();
+        close();
+    }//GEN-LAST:event_optionExitActionPerformed
 
     public static void close() {
         System.exit(0);
