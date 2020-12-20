@@ -6,8 +6,10 @@ import GUI.GUIClient;
  *
  * @author ariel
  */
-public class StartClient {
-    public static void main(String[] args) {
+public class StartClient implements MainStarter {
+
+    @Override
+    public void start() {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 GUIClient guic = new GUIClient();
@@ -16,4 +18,10 @@ public class StartClient {
             }
         });
     }
+
+    @Override
+    public String toString() {
+        return "Client";
+    }
+
 }

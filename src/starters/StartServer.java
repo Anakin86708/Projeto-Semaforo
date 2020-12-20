@@ -11,9 +11,10 @@ import GUI.GUIServer;
  *
  * @author silva
  */
-public class StartServer {
+public class StartServer implements MainStarter {
 
-    public static void main(String args[]) {
+    @Override
+    public void start() {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -24,4 +25,10 @@ public class StartServer {
             }
         });
     }
+
+    @Override
+    public String toString() {
+        return "Server";
+    }
+
 }

@@ -125,6 +125,8 @@ public class SemaphorePanel extends javax.swing.JPanel {
         yellow = new javax.swing.JLabel();
         green = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 255, 51));
+
         red.setBackground(new java.awt.Color(0, 0, 0));
         red.setFont(new java.awt.Font("Ebrima", 0, 36)); // NOI18N
         red.setForeground(new java.awt.Color(255, 255, 51));
