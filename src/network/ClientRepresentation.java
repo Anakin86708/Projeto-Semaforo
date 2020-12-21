@@ -31,4 +31,34 @@ public class ClientRepresentation implements Serializable {
         return port;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + this.port;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ClientRepresentation other = (ClientRepresentation) obj;
+        if (this.port != other.port) {
+            return false;
+        }
+        if (!this.address.getHostAddress().equals(other.address.getHostAddress())) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+
 }

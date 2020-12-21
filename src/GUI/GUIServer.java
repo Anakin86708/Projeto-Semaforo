@@ -1,6 +1,9 @@
 package GUI;
 
+import GUI.Draw.SemaphorePanel;
+import java.util.HashMap;
 import java.util.Timer;
+import network.ClientRepresentation;
 import server.ServerSemaphore;
 
 /**
@@ -11,6 +14,7 @@ public class GUIServer extends javax.swing.JFrame {
 
     private final ServerSemaphore semaphoreController;
     public final static int PERIOD = 5000;
+    private final HashMap<ClientRepresentation, SemaphorePanel> visualSemaphoresMap;
 
     /**
      * Creates new form GUIServer
@@ -18,6 +22,7 @@ public class GUIServer extends javax.swing.JFrame {
     public GUIServer() {
         initComponents();
         this.semaphoreController = new ServerSemaphore(this);
+        this.visualSemaphoresMap = new HashMap<>();
         initializeLog();
     }
 
@@ -39,11 +44,13 @@ public class GUIServer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        clients = new javax.swing.JPanel();
+        footer = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        tabs = new javax.swing.JTabbedPane();
         log = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         logArea = new javax.swing.JTextArea();
-        footer = new javax.swing.JPanel();
+        visualPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         optionExit = new javax.swing.JMenuItem();
@@ -58,21 +65,29 @@ public class GUIServer extends javax.swing.JFrame {
             }
         });
 
-        clients.setBackground(new java.awt.Color(255, 204, 204));
-        clients.setMinimumSize(new java.awt.Dimension(130, 100));
+        footer.setBackground(new java.awt.Color(0, 0, 0));
 
-        javax.swing.GroupLayout clientsLayout = new javax.swing.GroupLayout(clients);
-        clients.setLayout(clientsLayout);
-        clientsLayout.setHorizontalGroup(
-            clientsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 140, Short.MAX_VALUE)
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Semaphore server");
+
+        javax.swing.GroupLayout footerLayout = new javax.swing.GroupLayout(footer);
+        footer.setLayout(footerLayout);
+        footerLayout.setHorizontalGroup(
+            footerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(footerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        clientsLayout.setVerticalGroup(
-            clientsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 153, Short.MAX_VALUE)
+        footerLayout.setVerticalGroup(
+            footerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
         );
 
-        log.setBackground(new java.awt.Color(204, 255, 204));
+        tabs.setTabPlacement(javax.swing.JTabbedPane.LEFT);
+
+        log.setBackground(new java.awt.Color(255, 255, 0));
 
         logArea.setEditable(false);
         logArea.setColumns(20);
@@ -84,26 +99,22 @@ public class GUIServer extends javax.swing.JFrame {
         logLayout.setHorizontalGroup(
             logLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(logLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
                 .addContainerGap())
         );
         logLayout.setVerticalGroup(
             logLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addGroup(logLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
 
-        footer.setBackground(new java.awt.Color(0, 204, 204));
+        tabs.addTab("Log view", log);
 
-        javax.swing.GroupLayout footerLayout = new javax.swing.GroupLayout(footer);
-        footer.setLayout(footerLayout);
-        footerLayout.setHorizontalGroup(
-            footerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        footerLayout.setVerticalGroup(
-            footerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 24, Short.MAX_VALUE)
-        );
+        visualPanel.setLayout(new java.awt.GridLayout());
+        tabs.addTab("Visual", visualPanel);
 
         fileMenu.setText("File");
 
@@ -143,21 +154,13 @@ public class GUIServer extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(clients, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(log, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(footer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(tabs, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(log, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(clients, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(175, 175, 175)))
+                .addComponent(tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(footer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -201,11 +204,33 @@ public class GUIServer extends javax.swing.JFrame {
         logArea.setCaretPosition(logArea.getDocument().getLength());
     }
 
+    public void displayNewClientView(ClientRepresentation clientRepresentation) {
+        SemaphorePanel panel = new SemaphorePanel();
+        this.visualSemaphoresMap.put(clientRepresentation, panel);
+        this.visualPanel.add(panel);
+    }
+
+    public void removeClientView(ClientRepresentation clientRepresentation) {
+        SemaphorePanel panel = this.visualSemaphoresMap.get(clientRepresentation);
+        this.visualPanel.remove(panel);
+        this.visualSemaphoresMap.remove(clientRepresentation);
+    }
+
+    public void changeAllClientView() {
+        try {
+            this.visualSemaphoresMap.forEach((client, panel) -> {
+                panel.changeState(semaphoreController.getClientStage(client));
+            });
+        } catch (NullPointerException e) {
+            System.err.println("Null\n");
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel clients;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JPanel footer;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel log;
     private javax.swing.JTextArea logArea;
@@ -213,5 +238,7 @@ public class GUIServer extends javax.swing.JFrame {
     private javax.swing.JMenuItem optionAbout;
     private javax.swing.JMenuItem optionExit;
     private javax.swing.JMenuItem optionHelp;
+    private javax.swing.JTabbedPane tabs;
+    private javax.swing.JPanel visualPanel;
     // End of variables declaration//GEN-END:variables
 }
