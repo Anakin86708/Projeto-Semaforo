@@ -30,6 +30,10 @@ public class SemaphorePanel extends javax.swing.JPanel {
         };
     }
 
+    public StageSemaphore getCurrentStage() {
+        return currentStage;
+    }
+
     public void startTextShowTimer() {
         this.semaphoreTime = GUIServer.PERIOD / SECOND;
 

@@ -29,10 +29,12 @@ public class NetworkServer implements Runnable {
     private static final int PORT = 25556;
     private final List<ClientRepresentation> avaliableClients;
     private DatagramSocket listennerDatagramSocket;
+    private final ServerSemaphore serverSemaphore;
 
-    public NetworkServer() {
+    public NetworkServer(ServerSemaphore serverSemaphore) {
         this.keepRunning = true;
         this.avaliableClients = new ArrayList<>();
+        this.serverSemaphore = serverSemaphore;
     }
 
     /**
@@ -81,6 +83,7 @@ public class NetworkServer implements Runnable {
             }
         } catch (SocketException ex) {
             errorDialog(ex, "Server socket error.\n");
+            System.exit(1);
         }
     }
 
@@ -112,12 +115,14 @@ public class NetworkServer implements Runnable {
             }
             case STOP -> {
                 removeClient(srcRepresentation);
+                serverSemaphore.removeClient(srcRepresentation);
             }
         }
     }
 
     private void addNewClient(ClientRepresentation clientRepresentation) {
-        avaliableClients.add(clientRepresentation);  // Cliente está null
+        avaliableClients.add(clientRepresentation);
+        serverSemaphore.newClientAdded(clientRepresentation);
     }
 
     private void removeClient(ClientRepresentation clientRequested) {

@@ -19,7 +19,7 @@ public class ServerSemaphore extends TimerTask {
 
     public ServerSemaphore(GUIServer guiServer) {
         this.guiServer = guiServer;
-        this.networkServer = new NetworkServer();
+        this.networkServer = new NetworkServer(this);
         serverThread = networkServer.startThread();
     }
 
@@ -33,6 +33,7 @@ public class ServerSemaphore extends TimerTask {
     @Override
     public void run() {
         networkServer.changeAllSemaphoreStatus();
+        guiServer.changeAllClientView();
         periodicLog();
     }
 
@@ -56,7 +57,19 @@ public class ServerSemaphore extends TimerTask {
     }
 
     private String showStage(ClientRepresentation client) {
-        return this.networkServer.requestClientStage(client).toString();
+        return getClientStage(client).toString();
+    }
+
+    public StageSemaphore getClientStage(ClientRepresentation client) {
+        return this.networkServer.requestClientStage(client);
+    }
+
+    public void newClientAdded(ClientRepresentation clientRepresentation) {
+        guiServer.displayNewClientView(clientRepresentation);
+    }
+
+    public void removeClient(ClientRepresentation srcRepresentation) {
+        guiServer.removeClientView(srcRepresentation);
     }
 
     public void closeAllClients() {
