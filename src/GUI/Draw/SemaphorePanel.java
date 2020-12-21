@@ -44,17 +44,19 @@ public class SemaphorePanel extends javax.swing.JPanel {
     private void showTime() {
         clearText();
 
-        switch (currentStage) {
-            case RED -> {
-                red.setText(String.valueOf(semaphoreTime));
-            }
+        if (semaphoreTime >= 0) {
+            switch (currentStage) {
+                case RED -> {
+                    red.setText(String.valueOf(semaphoreTime));
+                }
 
-            case YELLOW -> {
-                yellow.setText(String.valueOf(semaphoreTime));
-            }
+                case YELLOW -> {
+                    yellow.setText(String.valueOf(semaphoreTime));
+                }
 
-            case GREEN -> {
-                green.setText(String.valueOf(semaphoreTime));
+                case GREEN -> {
+                    green.setText(String.valueOf(semaphoreTime));
+                }
             }
         }
     }

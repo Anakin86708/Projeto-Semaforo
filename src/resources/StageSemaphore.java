@@ -11,47 +11,23 @@ import static network.NetworkCommands.BYTEARRAYSIZE;
  * All possible semaphore stages
  */
 public enum StageSemaphore implements Serializable {
-    RED(0), YELLOW(1), GREEN(2);
-
-    private int actualStage;
-
-    private StageSemaphore(int actualStage) {
-        this.actualStage = actualStage;
-    }
-
-    public StageSemaphore getActualState() {
-        switch (actualStage) {
-            case 0 -> {
-                return StageSemaphore.RED;
-            }
-            case 1 -> {
-                return StageSemaphore.YELLOW;
-            }
-            case 2 -> {
-                return StageSemaphore.GREEN;
-            }
-            default -> {
-                return null;
-            }
-        }
-    }
+    RED, YELLOW, GREEN;
 
     public StageSemaphore changeStage() {
-        switch (actualStage) {
-            case 0 -> {
-                this.actualStage = 2;
+        switch (this) {
+            case RED -> {
+                return GREEN;
             }
-            case 2 -> {
-                this.actualStage = 1;
+            case YELLOW -> {
+                return RED;
             }
-            case 1 -> {
-                this.actualStage = 0;
+            case GREEN -> {
+                return YELLOW;
             }
             default -> {
-                this.actualStage = 0;
+                return RED;
             }
         }
-        return getActualState();
     }
 
     public ByteArrayOutputStream serialize(DatagramSocket socket) throws IOException {
