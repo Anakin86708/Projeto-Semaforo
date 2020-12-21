@@ -1,7 +1,9 @@
 About
+
 This program was developed in order to accomplish a evaluation activity from Oriented Object Programming II (SI 400) subject, taught by professor André F. de Angelis, from the Faculty of Technology.
 
 The program 
+
 The program consists of the development of a distributed control of a simulated network of traffic lights, which is built from the two modules: a server and a client. This project was developed using a integrated tool from NetBeans to build GUIs.
 
 Final version in December 2020.
