@@ -3,6 +3,10 @@ package starters;
 import GUI.GUIClient;
 
 public class StartClient implements MainStarter {
+    
+    public static void main(String[] args) {
+        new StartClient().start();
+    }
 
     @Override
     public void start() {
