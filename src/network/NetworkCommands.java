@@ -22,7 +22,6 @@ public enum NetworkCommands implements Serializable {
 
     /**
      * Responsible for sending a command to a specific customer
-     *
      * @param srcRepresentation source
      * @param dstRepresentation destination
      */
@@ -42,7 +41,6 @@ public enum NetworkCommands implements Serializable {
 
     /**
      * Send messages to server
-     *
      * @param srcRepresentation source
      */
     public void sendCommandToServer(ClientRepresentation srcRepresentation) {
@@ -51,7 +49,6 @@ public enum NetworkCommands implements Serializable {
 
     /**
      * Sends a request and returns the client stage
-     *
      * @param dstRepresentation client
      * @return current stage from client
      */
@@ -68,7 +65,6 @@ public enum NetworkCommands implements Serializable {
 
     /**
      * Waiting for client response
-     *
      * @param reciveSocket listening socket
      * @return serialized stage
      */

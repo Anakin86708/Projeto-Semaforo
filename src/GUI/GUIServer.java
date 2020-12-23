@@ -7,8 +7,7 @@ import network.ClientRepresentation;
 import server.ServerSemaphore;
 
 /**
- *
- * @author Leo
+ * Graphical Server Interface 
  */
 public class GUIServer extends javax.swing.JFrame {
 
@@ -167,24 +166,33 @@ public class GUIServer extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * To show the button Help
+     * @param evt Help
+     */
     private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
         DialogMessages dialog = new DialogMessages(this, true, "Help");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_showHelp
-
+    /**
+     * To show the button About
+     * @param evt About
+     */
     private void showAbout(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAbout
         DialogMessages dialog = new DialogMessages(this, true, "About");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_showAbout
-
+    /**
+     * To Exit 
+     * @param evt Exit
+     */
     private void exit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exit
         closeAllClients();
         stopThreadsAndExit();
     }//GEN-LAST:event_exit
-
+    
     private void windowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_windowClosing
         closeAllClients();
         stopThreadsAndExit();

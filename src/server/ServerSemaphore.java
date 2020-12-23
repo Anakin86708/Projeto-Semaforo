@@ -8,8 +8,8 @@ import network.NetworkCommands;
 import resources.StageSemaphore;
 
 /**
- *
- * @author Guilherme
+ * Responsable for creating the semaphore class of the server 
+ * and all the Semaphore relationship logic, showing the Clients
  */
 public class ServerSemaphore extends TimerTask {
 
@@ -17,12 +17,19 @@ public class ServerSemaphore extends TimerTask {
     private final NetworkServer networkServer;
     private final Thread serverThread;
 
+    /**
+     * GUI Server Semaphore 
+     * @param guiServer GUI Server
+     */
     public ServerSemaphore(GUIServer guiServer) {
         this.guiServer = guiServer;
         this.networkServer = new NetworkServer(this);
         serverThread = networkServer.startThread();
     }
 
+    /**
+     * Show the Program Version 
+     */
     public void initializeLog() {
         StringBuilder teste = new StringBuilder();
         teste.append("Welcome\n");
@@ -30,13 +37,19 @@ public class ServerSemaphore extends TimerTask {
         guiServer.writeOnLog(teste);
     }
 
+    /**
+     * Initialize other methods in the program
+     */
     @Override
     public void run() {
         networkServer.changeAllSemaphoreStatus();
         guiServer.changeAllClientView();
         periodicLog();
     }
-
+    
+    /**
+     * Show the Active Clients in the LOG
+     */
     private void periodicLog() {
         StringBuilder sb = new StringBuilder();
         sb.append("Active clients - ").append(networkServer.getCountAvaliableClients()).append("\n");
@@ -45,7 +58,11 @@ public class ServerSemaphore extends TimerTask {
         guiServer.writeOnLog(sb);
         System.out.println(sb.toString());
     }
-
+    
+    /**
+     * Responsable to show Clients in the LOG
+     * @return the String with Clients
+     */
     private String showClients() {
         StringBuilder sb = new StringBuilder();
         List<ClientRepresentation> avaliableClients = networkServer.getAvaliableClients();
@@ -60,18 +77,34 @@ public class ServerSemaphore extends TimerTask {
         return getClientStage(client).toString();
     }
 
+    /**
+     * Responsable to Stage Semaphore
+     * @param client Cliente Stage 
+     * @return the Cliente Stage
+     */
     public StageSemaphore getClientStage(ClientRepresentation client) {
         return this.networkServer.requestClientStage(client);
     }
 
+    /**
+     * Add a New Client
+     * @param clientRepresentation To add a Client
+     */
     public void newClientAdded(ClientRepresentation clientRepresentation) {
         guiServer.displayNewClientView(clientRepresentation);
     }
 
+    /**
+     * Remove a Client
+     * @param srcRepresentation To delete the Client View
+     */
     public void removeClient(ClientRepresentation srcRepresentation) {
         guiServer.removeClientView(srcRepresentation);
     }
 
+    /**
+     * Close All Client's Representations
+     */
     public void closeAllClients() {
         ClientRepresentation srcRepresentation = new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort());
         this.networkServer.getAvaliableClients().forEach(client -> {
@@ -79,6 +112,9 @@ public class ServerSemaphore extends TimerTask {
         });
     }
 
+    /**
+     * Stop the thread created 
+     */
     public void stopThread() {
         this.networkServer.stop();
         serverThread.interrupt();

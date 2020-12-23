@@ -19,7 +19,7 @@ import server.NetworkServer;
 import static resources.ExceptionHandler.errorDialog;
 
 /**
- * Manage network comunication for client
+ * To manage network comunication for client
  */
 public class NetworkClient implements Runnable {
 
@@ -27,6 +27,11 @@ public class NetworkClient implements Runnable {
     private volatile boolean keepRunning;
     private DatagramSocket listennerDatagramSocket;
     private final ClientSemaphore semaphore;
+    
+    /**
+     * Attempt to connect with the Client 
+     * @param semaphore Client Representation 
+     */
 
     public NetworkClient(ClientSemaphore semaphore) {
         this.keepRunning = true;
@@ -38,7 +43,11 @@ public class NetworkClient implements Runnable {
             ExceptionHandler.errorDialog(ex, "Unable to bind to network interface. Aborting...\n");
         }
     }
-
+    
+    /**
+     * Getting port for Client 
+     * @return the LocalPort or Message Error
+     */
     private int generatePort() {
         try ( ServerSocket ss = new ServerSocket(0)) {
             if (ss != null && ss.getLocalPort() > 0) {
@@ -59,7 +68,11 @@ public class NetworkClient implements Runnable {
     private void beaconToServer() throws IOException {
         NetworkCommands.NEW.sendCommandToServer(this.clientRepresentation);
     }
-
+    
+    /**
+     * Initialize the Thread
+     * @return the thread 
+     */
     public Thread startThread() {
         Thread thread = new Thread(this);
         thread.start();
@@ -70,7 +83,10 @@ public class NetworkClient implements Runnable {
     public void run() {
         networkListener();
     }
-
+    
+    /**
+     * Check communication with the datagram socket
+     */
     private void networkListener() {
         try {
             byte[] buf = new byte[NetworkCommands.BYTEARRAYSIZE];
@@ -83,7 +99,11 @@ public class NetworkClient implements Runnable {
             errorDialog(ex, "Server socket error.\n");
         }
     }
-
+    /**
+     * Receive the Packet 
+     * @param buf Byte the Receive Packet
+     * @throws HeadlessException Exception to Receive Packet
+     */
     private void recivePacket(byte[] buf) throws HeadlessException {
         try {
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -96,13 +116,23 @@ public class NetworkClient implements Runnable {
             errorDialog(ex, "Class not found!\n");
         }
     }
-
+    /**
+     * Deserialization the Object
+     * @param data byte to Deserialization 
+     * @return the Object Deserialization 
+     * @throws IOException Exception Deserialization
+     * @throws ClassNotFoundException  Class Not Found Exception Deserialization
+     */
     private NetworkObject deserialization(byte[] data) throws IOException, ClassNotFoundException {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
         ObjectInputStream objectStream = new ObjectInputStream(inputStream);
         return (NetworkObject) objectStream.readObject();
     }
 
+    /**
+     * Three cases to interpret Command  
+     * @param command NEXSTAGE, SERVER_STOP, REQUEST_STAGE
+     */
     private void interpretCommand(NetworkObject command) {
         switch (command.getCommand()) {
             case NEXTSTAGE -> {
@@ -118,11 +148,18 @@ public class NetworkClient implements Runnable {
         }
     }
 
+    /**
+     * To stop the sending Command
+     */
     public void sendEndCommand() {
         this.keepRunning = false;
         NetworkCommands.STOP.sendCommandToServer(clientRepresentation);
     }
-
+    
+    /**
+     * To send the Stage to Server 
+     * @param serverStagePort The Server stage 
+     */
     private void sendStageToServer(int serverStagePort) {
         try {
             DatagramSocket socket = new DatagramSocket();

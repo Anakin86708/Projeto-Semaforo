@@ -4,8 +4,7 @@ import client.ClientSemaphore;
 import resources.StageSemaphore;
 
 /**
- *
- * @author Leo
+ * Graphical Client Interface 
  */
 public class GUIClient extends javax.swing.JFrame {
 
@@ -181,19 +180,25 @@ public class GUIClient extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * To show Help 
+     * @param evt Help 
+     */
     private void displayHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayHelp
         DialogMessages dialog = new DialogMessages(this, true, "Help");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_displayHelp
-
+    /**
+     * To show About
+     * @param evt About
+     */
     private void displayAbout(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayAbout
         DialogMessages dialog = new DialogMessages(this, true, "About");
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_displayAbout
-
+    
     public void changeColorState(StageSemaphore stage) {
         this.semaphorePanel.changeState(stage);
     }

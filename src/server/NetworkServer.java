@@ -20,7 +20,8 @@ import static resources.ExceptionHandler.errorDialog;
 import resources.StageSemaphore;
 
 /**
- * Manage server network
+ * Responsable to manage server network, and
+ * all the logic of the relationship between Server and the System is here
  *
  */
 public class NetworkServer implements Runnable {
@@ -31,6 +32,10 @@ public class NetworkServer implements Runnable {
     private DatagramSocket listennerDatagramSocket;
     private final ServerSemaphore serverSemaphore;
 
+    /**
+     * Responsable for indicating the operation with the Client
+     * @param serverSemaphore 
+     */
     public NetworkServer(ServerSemaphore serverSemaphore) {
         this.keepRunning = true;
         this.avaliableClients = new ArrayList<>();
@@ -39,10 +44,10 @@ public class NetworkServer implements Runnable {
 
     /**
      * Returns the IP address for the server, which has been kept fixed as specified
-     * @return 
+     * @return the server IP or NULL
      */
     public static InetAddress getAddressServer() {
-        String serverIP = "192.168.15.22";
+        String serverIP = "192.168.18.5";
         try {
             return InetAddress.getByName(serverIP);
         } catch (UnknownHostException ex) {
@@ -50,29 +55,51 @@ public class NetworkServer implements Runnable {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static int getPort() {
         return PORT;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCountAvaliableClients() {
         return avaliableClients.size();
     }
 
+    /**
+     *
+     * @return
+     */
     public List<ClientRepresentation> getAvaliableClients() {
         return avaliableClients;
     }
 
+    /**
+     * Responsable for initializing the Thread command
+     * @return
+     */
     public Thread startThread() {
         Thread thread = new Thread(this);
         thread.start();
         return thread;
     }
 
+    /**
+     * To initialize the listener method 
+     */
     @Override
     public void run() {
         listener();
     }
 
+    /**
+     * The server connection logic, with the communication of the packets.
+     */
     private void listener() {
         try {
             byte[] buf = new byte[NetworkCommands.BYTEARRAYSIZE];
@@ -86,7 +113,11 @@ public class NetworkServer implements Runnable {
             System.exit(1);
         }
     }
-
+    /**
+     * The connection logic of the server when receiving the packet.
+     * @param buf the variable buf to references byte
+     * @throws HeadlessException Two Exceptions 
+     */
     private void recivePacket(byte[] buf) throws HeadlessException {
         try {
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -101,12 +132,24 @@ public class NetworkServer implements Runnable {
         }
     }
 
+    /**
+     * Responsable to deserialization and to transform an object
+     * @param data in Byte
+     * @return the Object deserialization
+     * @throws IOException Exception one
+     * @throws ClassNotFoundException Exception two
+     */
     private Object deserialization(byte[] data) throws IOException, ClassNotFoundException {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
         ObjectInputStream objectStream = new ObjectInputStream(inputStream);
         return objectStream.readObject();
     }
 
+    /**
+     * Create two commands for adding or removing a Client
+     * @param command Interpret the Command
+     * @param srcClient Variable to ClientRepresentation
+     */
     private void interpretCommand(NetworkObject command, InetAddress srcClient) {
         ClientRepresentation srcRepresentation = new ClientRepresentation(srcClient, command.getSrcRepresentation().getPort());
         switch (command.getCommand()) {
@@ -120,11 +163,19 @@ public class NetworkServer implements Runnable {
         }
     }
 
+    /**
+     * Responsable to create a Add New Client 
+     * @param clientRepresentation LOG representation
+     */
     private void addNewClient(ClientRepresentation clientRepresentation) {
         avaliableClients.add(clientRepresentation);
         serverSemaphore.newClientAdded(clientRepresentation);
     }
 
+    /**
+     * Responsable to remove the Client 
+     * @param clientRequested Removes the non-evaluable client 
+     */
     private void removeClient(ClientRepresentation clientRequested) {
         try {
             Iterator<ClientRepresentation> clientIterable = this.avaliableClients.iterator();
@@ -138,17 +189,25 @@ public class NetworkServer implements Runnable {
         }
     }
 
+    /**
+     * Responsable to change the Semaphore Status 
+     * for each Client
+     */
     public void changeAllSemaphoreStatus() {
         this.avaliableClients.forEach(clientRepresentation -> {
             NetworkCommands.NEXTSTAGE.sendCommandFromTo(new ClientRepresentation(NetworkServer.getAddressServer(), NetworkServer.getPort()), clientRepresentation);
         });
     }
 
+    /**
+     * Responsable to stop the Listener
+     */
     public void stop() {
         this.keepRunning = false;
         this.listennerDatagramSocket.close();
     }
 
+    
     StageSemaphore requestClientStage(ClientRepresentation client) {
         try {
             byte[] data = NetworkCommands.REQUEST_STAGE.getClientStageSemaphore(client);

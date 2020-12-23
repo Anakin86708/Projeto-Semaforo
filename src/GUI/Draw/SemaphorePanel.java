@@ -17,6 +17,9 @@ public class SemaphorePanel extends javax.swing.JPanel {
     private final int SECOND = 1000;
     private int semaphoreTime = GUIServer.PERIOD / SECOND;
 
+    /**
+     * Three panel colors  
+     */
     public SemaphorePanel() {
         initComponents();
 
@@ -45,6 +48,9 @@ public class SemaphorePanel extends javax.swing.JPanel {
         timer.start();
     }
 
+    /**
+     * To show the time in the Panel
+     */
     private void showTime() {
         clearText();
 
@@ -64,12 +70,20 @@ public class SemaphorePanel extends javax.swing.JPanel {
             }
         }
     }
-
+    
+    /**
+     * Put texts as null
+     */
     private void clearText() {
         red.setText(null);
         yellow.setText(null);
         green.setText(null);
     }
+    
+    /**
+     * Change the State Semaphore 
+     * @param stage Red, Yellow, Green, Stages 
+     */
 
     public void changeState(StageSemaphore stage) {
         this.currentStage = stage;
@@ -88,12 +102,17 @@ public class SemaphorePanel extends javax.swing.JPanel {
         startTextShowTimer();
     }
 
+    /**
+     * Change to Red 
+     */
     private void changeRed() {
         red.setEnabled(true);
         yellow.setEnabled(false);
         green.setEnabled(false);
     }
-
+    /**
+     * Change to Yellow 
+     */
     private void changeYellow() {
         red.setText(null);
         yellow.setEnabled(true);
@@ -101,6 +120,9 @@ public class SemaphorePanel extends javax.swing.JPanel {
         green.setEnabled(false);
     }
 
+    /**
+     * Change to Green 
+     */
     private void changeGreen() {
         green.setEnabled(true);
         yellow.setEnabled(false);

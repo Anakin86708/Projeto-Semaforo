@@ -29,7 +29,13 @@ public class NetworkObject implements Serializable {
     public ClientRepresentation getSrcRepresentation() {
         return srcRepresentation;
     }
-
+    /**
+     * Serialize the Socket
+     * @param socket is serializable 
+     * @return the output Stream
+     * @throws SocketException The message Socket Exception
+     * @throws IOException The message IO Exception
+     */
     public ByteArrayOutputStream serialize(DatagramSocket socket) throws SocketException, IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(BYTEARRAYSIZE);
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
