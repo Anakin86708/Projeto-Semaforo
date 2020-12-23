@@ -1,0 +1,19 @@
+Help
+
+The purpose of this program it´s to realize the distributed control with traffic lights.
+
+For the program to start running, the user must change his IP. To do this, enter the "Server" package, where containing the file "NetworkServer.java". Then, go to the "getAddressServer" method. Change the IP to that of your machine. If you don't know where to find the IP, open the command prompt and type "ipconfig". There will be the desired information.
+
+The program has three graphical interfaces. 
+
+Running the "Starter.java" file in the "starter" package, the first graphical interface will be a window that allows the user to choose between two options: Server and Client. 
+
+If the user chooses the "Server" option, the second graphical interface will be the "Server", which coordinates and generates traffic lights for users with their respective status information (color) and IP address.
+
+If the user chooses the "Client" option, the third graphical interface will be related to "Client" option. The user will be managed through the Server, which will present its graphical representation (red, yellow and green colors). There will be a traffic light timing feature (changing its status) for each user.
+
+Menu options are described below:
+    • Open “File” tab and selecting “Exit” option: Application will be closed.
+    • Open “Help” tab and selecting “Help” option: A new window will open containing essential informations to use the program.
+    • Open “Help” tab and selecting “About” option: A new window will open containing informations about program purpose.
+
